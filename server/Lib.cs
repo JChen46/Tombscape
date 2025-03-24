@@ -3,6 +3,8 @@ using Index = SpacetimeDB.Index;
 
 public static partial class Module
 {
+    private static readonly TimeSpan TickRate = TimeSpan.FromMilliseconds(600);
+
     [Table(Name = "config", Public = true)]
     public partial struct Config
     {
@@ -44,21 +46,13 @@ public static partial class Module
         public string type;
     }
 
-    [Table(Name = "movement_action", Public = true)]
-    public partial struct MovementAction
-    {
-        [PrimaryKey] public uint action_id;
-        [Unique] public uint player_id;
-        public DbVector2 position;
-    }
-
-    [Table(Name = "tick_timer", Scheduled = nameof(EndTick), ScheduledAt = nameof(scheduled_at))]
-    public partial struct TickTimer
+    [Table(Name = "tick", Scheduled = nameof(EndTick), ScheduledAt = nameof(schedule_at))]
+    public partial struct Tick
     {
         [PrimaryKey, AutoInc] public ulong scheduled_id;
-        [Unique, AutoInc] public ulong tick_id; // Need to be different from scheduled_id?
-        public ScheduleAt scheduled_at;
-        [Index.BTree] public bool ended;
+        [Unique, AutoInc] public ulong tick_id;
+        public ScheduleAt schedule_at;
+        public Timestamp end_time;
     }
     
     
@@ -70,9 +64,11 @@ public static partial class Module
     {
         Log.Info($"Initializing...");
         ctx.Db.config.Insert(new Config { world_size = DEFAULT_WORLD_SIZE });
-        ctx.Db.tick_timer.Insert(new TickTimer
+        var now = ctx.Timestamp;
+        ctx.Db.tick.Insert(new Tick
         {
-            scheduled_at = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(600))
+            schedule_at = new ScheduleAt.Time(now),
+            end_time = now
         });
     }
 
@@ -94,57 +90,23 @@ public static partial class Module
     }
 
     [Reducer]
-    public static void EndTick(ReducerContext ctx, TickTimer tick)
+    public static void EndTick(ReducerContext ctx, Tick tick)
     {
-        Log.Info($"EndTick...");
-        tick.ended = true;
-        ctx.Db.tick_timer.tick_id.Update(tick);
-        foreach (var action in ctx.Db.action.tick_id.Filter(tick.tick_id))
+        Log.Info($"EndTick {tick.tick_id}");
+        var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.end_time.ToTimeSpanSinceUnixEpoch().Add(TickRate));
+        ctx.Db.tick.Insert(new Tick
+        {
+            schedule_at = new ScheduleAt.Time(nextTick),
+            end_time = nextTick,
+        });
+        foreach (var action in ctx.Db.action.Iter())
         {
             switch (action.type)
             {
                 case "movement":
-                    DoMovementAction(ctx, action);
+                    DoMovementAction(ctx, tick, action);
                     break;
             }
         }
-    }
-
-    [Reducer]
-    public static void DoMovementAction(ReducerContext ctx, Action action)
-    {
-        var movementAction = ctx.Db.movement_action.action_id.Find(action.action_id);
-        if (movementAction.HasValue)
-        {
-            var player = ctx.Db.player.player_id.Find(movementAction.Value.player_id) ?? throw new Exception("Player not found");
-            var pc = ctx.Db.character.player_id.Find(player.player_id) ?? throw new Exception("Player not found");
-            var entity = ctx.Db.entity.entity_id.Find(pc.entity_id) ?? throw new Exception("Entity not found");
-            var distance = movementAction.Value.position - entity.position;
-            if (Math.Abs(distance.x) <= 2 && Math.Abs(distance.y) <= 2)
-            {
-                Log.Info($"Moving to {movementAction.Value.position.x}, {movementAction.Value.position.y}");
-                entity.position = movementAction.Value.position;
-                ctx.Db.entity.entity_id.Update(entity);
-            }
-        }
-    }
-
-    [Reducer]
-    public static void CreateMovementAction(ReducerContext ctx, int x, int y)
-    {
-        var tick = ctx.Db.tick_timer.ended.Filter(true).First();
-        var player = ctx.Db.player.identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var action = ctx.Db.action.Insert(new Action
-        {
-            tick_id = tick.tick_id,
-            type = "movement",
-        });
-        ctx.Db.movement_action.Insert(new MovementAction
-        {
-            action_id = action.action_id,
-            position = new DbVector2(x, y),
-            player_id = player.player_id,
-        });
-        Log.Info($"Created movement action {action.action_id} to {x}, {y} with tick {tick.tick_id}");
     }
 }

@@ -5,6 +5,12 @@ public static partial class Module
     [Reducer(ReducerKind.ClientConnected)]
     public static void Connect(ReducerContext ctx)
     {
+        // DoConnect(ctx);
+    }
+
+    [Reducer]
+    public static void DoConnect(ReducerContext ctx)
+    {
         var player = ctx.Db.logged_out_player.identity.Find(ctx.Sender);
         if (player != null)
         {
@@ -26,14 +32,20 @@ public static partial class Module
     [Reducer(ReducerKind.ClientDisconnected)]
     public static void Disconnect(ReducerContext ctx)
     {
+        // DoDisconnect(ctx);
+    }
+
+    [Reducer]
+    public static void DoDisconnect(ReducerContext ctx)
+    {
         Log.Debug($"User disconnected: {ctx.Sender}");
-        // var player = ctx.Db.player.identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        // var character = ctx.Db.character.player_id.Find(player.player_id) ?? throw new Exception("Character not found");
-        // var entity = ctx.Db.entity.entity_id.Find(character.entity_id) ?? throw new Exception("Entity not found");
-        // ctx.Db.player.Delete(player);
-        // ctx.Db.character.Delete(character);
-        // ctx.Db.entity.Delete(entity);
-        // ctx.Db.logged_out_player.Insert(player);
+        var player = ctx.Db.player.identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        var character = ctx.Db.character.player_id.Find(player.player_id) ?? throw new Exception("Character not found");
+        var entity = ctx.Db.entity.entity_id.Find(character.entity_id) ?? throw new Exception("Entity not found");
+        ctx.Db.player.Delete(player);
+        ctx.Db.character.Delete(character);
+        ctx.Db.entity.Delete(entity);
+        ctx.Db.logged_out_player.Insert(player);
     }
     
     [Reducer]
