@@ -1,50 +1,62 @@
 using SpacetimeDB;
+using Index = SpacetimeDB.Index;
 
 public static partial class Module
 {
+    private static readonly TimeSpan TickRate = TimeSpan.FromMilliseconds(600);
+
     [Table(Name = "config", Public = true)]
     public partial struct Config
     {
-        [PrimaryKey] public uint id;
-        public ulong world_size;
+        [PrimaryKey] public uint Id;
+        public ulong WorldSize;
     }
-    
+
     [Table(Name = "entity", Public = true)]
     public partial struct Entity
     {
-        [PrimaryKey, AutoInc] 
-        public uint entity_id;
-        public DbVector2 position;
+        [PrimaryKey, AutoInc] public uint EntityId;
+        public DbVector2 Position;
     }
 
-    [Table(Name = "npc", Public = true)]
-    public partial struct Npc
-    {
-        [PrimaryKey, AutoInc] public uint entity_id;
-        [SpacetimeDB.Index.BTree] public uint npc_id;
-        [SpacetimeDB.Index.BTree] public uint player_id;
-        
-    }
-    
     [Table(Name = "player", Public = true)]
     [Table(Name = "logged_out_player")]
     public partial struct Player
     {
-        [PrimaryKey]
-        public Identity identity;
-        [Unique, AutoInc]
-        public uint player_id;
-        public string name;
+        [PrimaryKey] public Identity Identity;
+        [Unique, AutoInc] public uint PlayerId;
+        public string Name;
     }
-    
-    
+
+    [Table(Name = "character", Public = true)]
+    public partial struct Character
+    {
+        [PrimaryKey] public uint EntityId;
+        [Unique] public uint PlayerId;
+    }
+
+    [Table(Name = "tick", Scheduled = nameof(EndTick), ScheduledAt = nameof(ScheduleAt))]
+    public partial struct Tick
+    {
+        [PrimaryKey, AutoInc] public ulong ScheduledId;
+        public ScheduleAt ScheduleAt;
+        public Timestamp EndTime;
+    }
+
+
     // ================================ Reducers ================================
-    
+
     [Reducer(ReducerKind.Init)]
     public static void Init(ReducerContext ctx)
     {
         Log.Info($"Initializing...");
-        ctx.Db.config.Insert(new Config { world_size = DEFAULT_WORLD_SIZE });
+        ctx.Db.config.Insert(new Config { WorldSize = DEFAULT_WORLD_SIZE });
+        var now = ctx.Timestamp;
+        ctx.Db.tick.Insert(new Tick
+        {
+            ScheduleAt = new ScheduleAt.Time(now),
+            EndTime = now
+        });
     }
 
     [Reducer]
@@ -58,9 +70,33 @@ public static partial class Module
     public static void TestUpdate(ReducerContext ctx, String name)
     {
         Log.Info($"TestUpdate ::  with name: {name}");
-        var player = ctx.Db.player.identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        player.name = name;
+        var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        player.Name = name;
         Log.Info($"TestUpdate :: player {ctx.Sender} updated to {name}");
-        ctx.Db.player.identity.Update(player);
+        ctx.Db.player.Identity.Update(player);
+    }
+
+    [Reducer]
+    public static void EndTick(ReducerContext ctx, Tick tick)
+    {
+        try
+        {
+
+            var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
+            Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
+            ctx.Db.tick.Insert(new Tick
+            {
+                ScheduleAt = new ScheduleAt.Time(nextTick),
+                EndTime = nextTick,
+            });
+            foreach (var movementAction in ctx.Db.movement_action.Iter())
+            {
+                DoMovementAction(ctx, tick, movementAction);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Error occurred in EndTick: {e.Message}");
+        }
     }
 }
