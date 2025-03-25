@@ -8,67 +8,54 @@ public static partial class Module
     [Table(Name = "config", Public = true)]
     public partial struct Config
     {
-        [PrimaryKey] public uint id;
-        public ulong world_size;
+        [PrimaryKey] public uint Id;
+        public ulong WorldSize;
     }
-    
+
     [Table(Name = "entity", Public = true)]
     public partial struct Entity
     {
-        [PrimaryKey, AutoInc] 
-        public uint entity_id;
-        public DbVector2 position;
+        [PrimaryKey, AutoInc] public uint EntityId;
+        public DbVector2 Position;
     }
-    
+
     [Table(Name = "player", Public = true)]
     [Table(Name = "logged_out_player")]
     public partial struct Player
     {
-        [PrimaryKey]
-        public Identity identity;
-        [Unique, AutoInc]
-        public uint player_id;
-        public string name;
+        [PrimaryKey] public Identity Identity;
+        [Unique, AutoInc] public uint PlayerId;
+        public string Name;
     }
 
     [Table(Name = "character", Public = true)]
     public partial struct Character
     {
-        [PrimaryKey] public uint entity_id;
-        [Unique] public uint player_id;
+        [PrimaryKey] public uint EntityId;
+        [Unique] public uint PlayerId;
     }
 
-    [Table(Name = "action", Public = true)]
-    public partial struct Action
-    {
-        [PrimaryKey, AutoInc] public uint action_id;
-        [Index.BTree] public ulong tick_id;
-        public string type;
-    }
-
-    [Table(Name = "tick", Scheduled = nameof(EndTick), ScheduledAt = nameof(schedule_at))]
+    [Table(Name = "tick", Scheduled = nameof(EndTick), ScheduledAt = nameof(ScheduleAt))]
     public partial struct Tick
     {
-        [PrimaryKey, AutoInc] public ulong scheduled_id;
-        [Unique, AutoInc] public ulong tick_id;
-        public ScheduleAt schedule_at;
-        public Timestamp end_time;
+        [PrimaryKey, AutoInc] public ulong ScheduledId;
+        public ScheduleAt ScheduleAt;
+        public Timestamp EndTime;
     }
-    
-    
-    
+
+
     // ================================ Reducers ================================
-    
+
     [Reducer(ReducerKind.Init)]
     public static void Init(ReducerContext ctx)
     {
         Log.Info($"Initializing...");
-        ctx.Db.config.Insert(new Config { world_size = DEFAULT_WORLD_SIZE });
+        ctx.Db.config.Insert(new Config { WorldSize = DEFAULT_WORLD_SIZE });
         var now = ctx.Timestamp;
         ctx.Db.tick.Insert(new Tick
         {
-            schedule_at = new ScheduleAt.Time(now),
-            end_time = now
+            ScheduleAt = new ScheduleAt.Time(now),
+            EndTime = now
         });
     }
 
@@ -83,30 +70,33 @@ public static partial class Module
     public static void TestUpdate(ReducerContext ctx, String name)
     {
         Log.Info($"TestUpdate ::  with name: {name}");
-        var player = ctx.Db.player.identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        player.name = name;
+        var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        player.Name = name;
         Log.Info($"TestUpdate :: player {ctx.Sender} updated to {name}");
-        ctx.Db.player.identity.Update(player);
+        ctx.Db.player.Identity.Update(player);
     }
 
     [Reducer]
     public static void EndTick(ReducerContext ctx, Tick tick)
     {
-        Log.Info($"EndTick {tick.tick_id}");
-        var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.end_time.ToTimeSpanSinceUnixEpoch().Add(TickRate));
-        ctx.Db.tick.Insert(new Tick
+        try
         {
-            schedule_at = new ScheduleAt.Time(nextTick),
-            end_time = nextTick,
-        });
-        foreach (var action in ctx.Db.action.Iter())
-        {
-            switch (action.type)
+
+            var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
+            Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
+            ctx.Db.tick.Insert(new Tick
             {
-                case "movement":
-                    DoMovementAction(ctx, tick, action);
-                    break;
+                ScheduleAt = new ScheduleAt.Time(nextTick),
+                EndTime = nextTick,
+            });
+            foreach (var movementAction in ctx.Db.movement_action.Iter())
+            {
+                DoMovementAction(ctx, tick, movementAction);
             }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Error occurred in EndTick: {e.Message}");
         }
     }
 }
