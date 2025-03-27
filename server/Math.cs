@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using SpacetimeDB;
 
-[SpacetimeDB.Type]
+[Type]
 public partial struct DbVector2 : IEquatable<DbVector2>
 {
     public int x;
@@ -16,13 +16,36 @@ public partial struct DbVector2 : IEquatable<DbVector2>
     public float Magnitude => MathF.Sqrt(SqrMagnitude);
     public DbVector2 Normalized => this / Magnitude;
 
-    public static DbVector2 operator +(DbVector2 a, DbVector2 b) => new DbVector2(a.x + b.x, a.y + b.y);
-    public static DbVector2 operator -(DbVector2 a, DbVector2 b) => new DbVector2(a.x - b.x, a.y - b.y);
-    public static DbVector2 operator *(DbVector2 a, int b) => new DbVector2(a.x * b, a.y * b);
+    public static DbVector2 operator +(DbVector2 a, DbVector2 b)
+    {
+        return new DbVector2(a.x + b.x, a.y + b.y);
+    }
+
+    public static DbVector2 operator -(DbVector2 a, DbVector2 b)
+    {
+        return new DbVector2(a.x - b.x, a.y - b.y);
+    }
+
+    public static DbVector2 operator *(DbVector2 a, int b)
+    {
+        return new DbVector2(a.x * b, a.y * b);
+    }
+
     // modified to round to nearest int
-    public static DbVector2 operator /(DbVector2 a, float b) => new DbVector2((int)Math.Round((float)a.x / b), (int)Math.Round(a.y / b));
-    public static bool operator ==(DbVector2 a, DbVector2 b) => a.Equals(b);
-    public static bool operator !=(DbVector2 a, DbVector2 b) => !a.Equals(b);
+    public static DbVector2 operator /(DbVector2 a, float b)
+    {
+        return new DbVector2((int)Math.Round(a.x / b), (int)Math.Round(a.y / b));
+    }
+
+    public static bool operator ==(DbVector2 a, DbVector2 b)
+    {
+        return a.Equals(b);
+    }
+
+    public static bool operator !=(DbVector2 a, DbVector2 b)
+    {
+        return !a.Equals(b);
+    }
 
     public bool Equals(DbVector2 other)
     {

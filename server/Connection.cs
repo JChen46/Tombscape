@@ -14,7 +14,7 @@ public static partial class Module
         var player = ctx.Db.logged_out_player.Identity.Find(ctx.Sender);
         if (player != null)
         {
-            Log.Debug($"User connected: {ctx.Sender}"); 
+            Log.Debug($"User connected: {ctx.Sender}");
             ctx.Db.player.Insert(player.Value);
             ctx.Db.logged_out_player.Identity.Delete(player.Value.Identity);
         }
@@ -24,7 +24,7 @@ public static partial class Module
             ctx.Db.player.Insert(new Player
             {
                 Identity = ctx.Sender,
-                Name = "",
+                Name = ""
             });
         }
     }
@@ -47,7 +47,7 @@ public static partial class Module
         ctx.Db.entity.Delete(entity);
         ctx.Db.logged_out_player.Insert(player);
     }
-    
+
     [Reducer]
     public static void EnterGame(ReducerContext ctx, string name)
     {
@@ -57,12 +57,13 @@ public static partial class Module
         ctx.Db.player.Identity.Update(player);
         var entity = ctx.Db.entity.Insert(new Entity
         {
-            Position = new DbVector2(0, 0),
+            Position = new DbVector2(0, 0)
         });
         var character = ctx.Db.character.Insert(new Character
         {
             EntityId = entity.EntityId,
-            PlayerId = player.PlayerId
+            PlayerId = player.PlayerId,
+            Health = StartingHealth
         });
         Log.Info($"Player {name} entered");
     }

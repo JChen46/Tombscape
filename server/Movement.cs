@@ -69,7 +69,7 @@ public static partial class Module
         var movementActionInsert = ctx.Db.movement_action.Insert(new MovementAction
         {
             Destination = new DbVector2(x, y),
-            PlayerId = player.PlayerId,
+            PlayerId = player.PlayerId
         });
         Log.Info($"Created movement action {movementActionInsert.ActionId} to {x}, {y} with tick {tick.ScheduledId}");
     }

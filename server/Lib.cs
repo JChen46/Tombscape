@@ -4,6 +4,7 @@ using Index = SpacetimeDB.Index;
 public static partial class Module
 {
     private static readonly TimeSpan TickRate = TimeSpan.FromMilliseconds(600);
+    private const float StartingHealth = 100;
 
     [Table(Name = "config", Public = true)]
     public partial struct Config
@@ -25,7 +26,7 @@ public static partial class Module
     {
         [PrimaryKey] public Identity Identity;
         [Unique, AutoInc] public uint PlayerId;
-        public string Name;
+        [Index.BTree] public string Name;
     }
 
     [Table(Name = "character", Public = true)]
@@ -33,6 +34,7 @@ public static partial class Module
     {
         [PrimaryKey] public uint EntityId;
         [Unique] public uint PlayerId;
+        public float Health;
     }
 
     [Table(Name = "tick", Scheduled = nameof(EndTick), ScheduledAt = nameof(ScheduleAt))]
@@ -67,7 +69,7 @@ public static partial class Module
     }
 
     [Reducer]
-    public static void TestUpdate(ReducerContext ctx, String name)
+    public static void TestUpdate(ReducerContext ctx, string name)
     {
         Log.Info($"TestUpdate ::  with name: {name}");
         var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
@@ -81,18 +83,16 @@ public static partial class Module
     {
         try
         {
-
             var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
             Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
             ctx.Db.tick.Insert(new Tick
             {
                 ScheduleAt = new ScheduleAt.Time(nextTick),
-                EndTime = nextTick,
+                EndTime = nextTick
             });
-            foreach (var movementAction in ctx.Db.movement_action.Iter())
-            {
-                DoMovementAction(ctx, tick, movementAction);
-            }
+            foreach (var movementAction in ctx.Db.movement_action.Iter()) DoMovementAction(ctx, tick, movementAction);
+            foreach (var colorSpellAction in ctx.Db.color_spell_action.Iter()) DoColorSpellAction(ctx, colorSpellAction);
+            foreach (var colorSpellAction in ctx.Db.color_spell_action.Iter()) ApplyColorSpell(ctx, colorSpellAction);
         }
         catch (Exception e)
         {
