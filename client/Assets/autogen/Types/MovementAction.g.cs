@@ -11,29 +11,29 @@ namespace SpacetimeDB.Types
 {
     [SpacetimeDB.Type]
     [DataContract]
-    public sealed partial class Player
+    public sealed partial class MovementAction
     {
-        [DataMember(Name = "Identity")]
-        public SpacetimeDB.Identity Identity;
+        [DataMember(Name = "ActionId")]
+        public uint ActionId;
         [DataMember(Name = "PlayerId")]
         public uint PlayerId;
-        [DataMember(Name = "Name")]
-        public string Name;
+        [DataMember(Name = "Destination")]
+        public DbVector2 Destination;
 
-        public Player(
-            SpacetimeDB.Identity Identity,
+        public MovementAction(
+            uint ActionId,
             uint PlayerId,
-            string Name
+            DbVector2 Destination
         )
         {
-            this.Identity = Identity;
+            this.ActionId = ActionId;
             this.PlayerId = PlayerId;
-            this.Name = Name;
+            this.Destination = Destination;
         }
 
-        public Player()
+        public MovementAction()
         {
-            this.Name = "";
+            this.Destination = new();
         }
     }
 }

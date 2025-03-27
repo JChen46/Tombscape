@@ -13,9 +13,9 @@ namespace SpacetimeDB.Types
     [DataContract]
     public sealed partial class Entity
     {
-        [DataMember(Name = "entity_id")]
+        [DataMember(Name = "EntityId")]
         public uint EntityId;
-        [DataMember(Name = "position")]
+        [DataMember(Name = "Position")]
         public DbVector2 Position;
 
         public Entity(

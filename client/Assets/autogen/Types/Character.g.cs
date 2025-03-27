@@ -11,27 +11,23 @@ namespace SpacetimeDB.Types
 {
     [SpacetimeDB.Type]
     [DataContract]
-    public sealed partial class Npc
+    public sealed partial class Character
     {
-        [DataMember(Name = "entity_id")]
+        [DataMember(Name = "EntityId")]
         public uint EntityId;
-        [DataMember(Name = "npc_id")]
-        public uint NpcId;
-        [DataMember(Name = "player_id")]
+        [DataMember(Name = "PlayerId")]
         public uint PlayerId;
 
-        public Npc(
+        public Character(
             uint EntityId,
-            uint NpcId,
             uint PlayerId
         )
         {
             this.EntityId = EntityId;
-            this.NpcId = NpcId;
             this.PlayerId = PlayerId;
         }
 
-        public Npc()
+        public Character()
         {
         }
     }

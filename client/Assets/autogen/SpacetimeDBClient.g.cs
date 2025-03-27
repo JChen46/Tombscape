@@ -20,11 +20,13 @@ namespace SpacetimeDB.Types
     {
         public RemoteTables(DbConnection conn)
         {
+            AddTable(Character = new(conn));
             AddTable(Config = new(conn));
             AddTable(Entity = new(conn));
             AddTable(LoggedOutPlayer = new(conn));
-            AddTable(Npc = new(conn));
+            AddTable(MovementAction = new(conn));
             AddTable(Player = new(conn));
+            AddTable(Tick = new(conn));
         }
     }
 
@@ -434,7 +436,12 @@ namespace SpacetimeDB.Types
             return update.ReducerCall.ReducerName switch
             {
                 "Connect" => BSATNHelpers.Decode<Reducer.Connect>(encodedArgs),
+                "CreateMovementAction" => BSATNHelpers.Decode<Reducer.CreateMovementAction>(encodedArgs),
                 "Disconnect" => BSATNHelpers.Decode<Reducer.Disconnect>(encodedArgs),
+                "DoConnect" => BSATNHelpers.Decode<Reducer.DoConnect>(encodedArgs),
+                "DoDisconnect" => BSATNHelpers.Decode<Reducer.DoDisconnect>(encodedArgs),
+                "DoMovementAction" => BSATNHelpers.Decode<Reducer.DoMovementAction>(encodedArgs),
+                "EndTick" => BSATNHelpers.Decode<Reducer.EndTick>(encodedArgs),
                 "EnterGame" => BSATNHelpers.Decode<Reducer.EnterGame>(encodedArgs),
                 "Test" => BSATNHelpers.Decode<Reducer.Test>(encodedArgs),
                 "TestUpdate" => BSATNHelpers.Decode<Reducer.TestUpdate>(encodedArgs),
@@ -460,7 +467,12 @@ namespace SpacetimeDB.Types
             return reducer switch
             {
                 Reducer.Connect args => Reducers.InvokeConnect(eventContext, args),
+                Reducer.CreateMovementAction args => Reducers.InvokeCreateMovementAction(eventContext, args),
                 Reducer.Disconnect args => Reducers.InvokeDisconnect(eventContext, args),
+                Reducer.DoConnect args => Reducers.InvokeDoConnect(eventContext, args),
+                Reducer.DoDisconnect args => Reducers.InvokeDoDisconnect(eventContext, args),
+                Reducer.DoMovementAction args => Reducers.InvokeDoMovementAction(eventContext, args),
+                Reducer.EndTick args => Reducers.InvokeEndTick(eventContext, args),
                 Reducer.EnterGame args => Reducers.InvokeEnterGame(eventContext, args),
                 Reducer.Test args => Reducers.InvokeTest(eventContext, args),
                 Reducer.TestUpdate args => Reducers.InvokeTestUpdate(eventContext, args),

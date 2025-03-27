@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     public static Identity LocalIdentity { get; private set; }
     public static DbConnection Conn { get; private set; }
 
+    public static Dictionary<uint, EntityController> Entities = new Dictionary<uint, EntityController>();
+	public static Dictionary<uint, PlayerController> Players = new Dictionary<uint, PlayerController>();
+
     private void Start()
     {
         Instance = this;
@@ -47,11 +50,17 @@ public class GameManager : MonoBehaviour
     }
 
     // Called when we connect to SpacetimeDB and receive our client identity
-    void HandleConnect(DbConnection _conn, Identity identity, string token)
+    void HandleConnect(DbConnection conn, Identity identity, string token)
     {
         Debug.Log("Connected.");
         AuthToken.SaveToken(token);
         LocalIdentity = identity;
+
+        conn.Db.Character.OnInsert += CircleOnInsert;
+        conn.Db.Entity.OnUpdate += EntityOnUpdate;
+        conn.Db.Entity.OnDelete += EntityOnDelete;
+        conn.Db.Player.OnInsert += PlayerOnInsert;
+        conn.Db.Player.OnDelete += PlayerOnDelete;
 
         OnConnected?.Invoke();
 
@@ -59,6 +68,55 @@ public class GameManager : MonoBehaviour
         Conn.SubscriptionBuilder()
             .OnApplied(HandleSubscriptionApplied)
             .SubscribeToAllTables();
+    }
+
+    private static void CircleOnInsert(EventContext context, Character insertedValue)
+    {
+        var player = GetOrCreatePlayer(insertedValue.PlayerId);
+        var entityController = PrefabManager.SpawnCircle(insertedValue, player);
+        Entities.Add(insertedValue.EntityId, entityController);
+    }
+
+    private static void EntityOnUpdate(EventContext context, Entity oldEntity, Entity newEntity)
+    {
+        if (!Entities.TryGetValue(newEntity.EntityId, out var entityController))
+        {
+            return;
+        }
+        entityController.OnEntityUpdated(newEntity);
+    }
+
+    private static void EntityOnDelete(EventContext context, Entity oldEntity)
+    {
+        if (Entities.Remove(oldEntity.EntityId, out var entityController))
+        {
+            entityController.OnDelete(context);
+        }
+    }
+
+    private static void PlayerOnInsert(EventContext context, Player insertedPlayer)
+    {
+        GetOrCreatePlayer(insertedPlayer.PlayerId);
+    }
+
+    private static void PlayerOnDelete(EventContext context, Player deletedvalue)
+    {
+        if (Players.Remove(deletedvalue.PlayerId, out var playerController))
+        {
+            GameObject.Destroy(playerController.gameObject);
+        }
+    }
+
+    private static PlayerController GetOrCreatePlayer(uint playerId)
+    {
+        if (!Players.TryGetValue(playerId, out var playerController))
+        {
+            var player = Conn.Db.Player.PlayerId.Find(playerId);
+            playerController = PrefabManager.SpawnPlayer(player);
+            Players.Add(playerId, playerController);
+        }
+
+        return playerController;
     }
 
     void HandleConnectError(Exception ex)
@@ -79,6 +137,14 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Subscription applied!");
         OnSubscriptionApplied?.Invoke();
+
+        // Once we have the initial subscription sync'd to the client cache
+        // Get the world size from the config table and set up the arena
+        var worldSize = Conn.Db.Config.Id.Find(0).WorldSize;
+        SetupArena(worldSize);
+
+        // Call enter game with the player name 3Blave
+        ctx.Reducers.EnterGame("test");
     }
 
     public static bool IsConnected()
@@ -90,5 +156,29 @@ public class GameManager : MonoBehaviour
     {
         Conn.Disconnect();
         Conn = null;
+    }
+    
+    private void SetupArena(float worldSize)
+    {
+        CreateBorderCube(new Vector2(worldSize / 2.0f, worldSize + borderThickness / 2),
+            new Vector2(worldSize + borderThickness * 2.0f, borderThickness)); //North
+        CreateBorderCube(new Vector2(worldSize / 2.0f, -borderThickness / 2),
+            new Vector2(worldSize + borderThickness * 2.0f, borderThickness)); //South
+        CreateBorderCube(new Vector2(worldSize + borderThickness / 2, worldSize / 2.0f),
+            new Vector2(borderThickness, worldSize + borderThickness * 2.0f)); //East
+        CreateBorderCube(new Vector2(-borderThickness / 2, worldSize / 2.0f),
+            new Vector2(borderThickness, worldSize + borderThickness * 2.0f)); //West
+        
+        // Set the world size for the camera controller
+        // CameraController.WorldSize = worldSize;
+    }
+    
+    private void CreateBorderCube(Vector2 position, Vector2 scale)
+    {
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "Border";
+        cube.transform.localScale = new Vector3(scale.x, scale.y, 1);
+        cube.transform.position = new Vector3(position.x, position.y, 1);
+        cube.GetComponent<MeshRenderer>().material = borderMaterial;
     }
 }

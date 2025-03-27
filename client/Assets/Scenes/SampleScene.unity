@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 139702930}
   - component: {fileID: 139702929}
   - component: {fileID: 139702928}
+  - component: {fileID: 139702931}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -161,6 +162,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c36948bf2d1cd3d4e9a154781a7559ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  borderThickness: 2
+  borderMaterial: {fileID: 0}
 --- !u!4 &139702930
 Transform:
   m_ObjectHideFlags: 0
@@ -176,6 +179,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &139702931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139702927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf23cbd26b0e4b4db94729521c1242d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CirclePrefab: {fileID: 5547296095288323118, guid: f7678cdd24249484495ecaf196819866, type: 3}
+  PlayerPrefab: {fileID: 9209472888590753282, guid: 06af368df1e06764aba77af1502a60bb, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,9 +13,9 @@ namespace SpacetimeDB.Types
     [DataContract]
     public sealed partial class Config
     {
-        [DataMember(Name = "id")]
+        [DataMember(Name = "Id")]
         public uint Id;
-        [DataMember(Name = "world_size")]
+        [DataMember(Name = "WorldSize")]
         public ulong WorldSize;
 
         public Config(

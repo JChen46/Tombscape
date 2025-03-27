@@ -5,7 +5,7 @@ public static partial class Module
     [Reducer(ReducerKind.ClientConnected)]
     public static void Connect(ReducerContext ctx)
     {
-        // DoConnect(ctx);
+        DoConnect(ctx);
     }
 
     [Reducer]
@@ -32,7 +32,7 @@ public static partial class Module
     [Reducer(ReducerKind.ClientDisconnected)]
     public static void Disconnect(ReducerContext ctx)
     {
-        // DoDisconnect(ctx);
+        DoDisconnect(ctx);
     }
 
     [Reducer]
