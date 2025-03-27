@@ -58,6 +58,7 @@ public static partial class Module
     [Reducer]
     public static void CreateMovementAction(ReducerContext ctx, int x, int y)
     {
+        Log.Info($"Creating movement action x {x} y {y}");
         var tick = ctx.Db.tick.Iter().Last();
         var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
         var existingAction = ctx.Db.movement_action.PlayerId.Find(player.PlayerId);

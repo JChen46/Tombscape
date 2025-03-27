@@ -55,6 +55,43 @@ public class PlayerController : MonoBehaviour
 			// DeathScreen.Instance.SetVisible(true);
 		}
 	}
+    public void Update()
+{
+    if (!IsLocalPlayer || NumberOfOwnedCircles == 0)
+    {
+        return;
+    }
+
+    if (Input.GetKeyDown(KeyCode.Q))
+    {
+        if (LockInputPosition.HasValue)
+        {
+            LockInputPosition = null;
+        }
+        else
+        {
+            LockInputPosition = (Vector2)Input.mousePosition;
+        }
+    }
+
+    // Throttled input requests
+    if (Time.time - LastMovementSendTimestamp >= SEND_UPDATES_FREQUENCY)
+    {
+        LastMovementSendTimestamp = Time.time;
+
+        var mousePosition = LockInputPosition ?? (Vector2)Input.mousePosition;
+        var screenSize = new Vector2
+        {
+            x = Screen.width,
+            y = Screen.height,
+        };
+        var centerOfScreen = screenSize / 2;
+
+        var direction = (mousePosition - centerOfScreen) / (screenSize.y / 3);
+        if (testInputEnabled) { direction = testInput; }
+        GameManager.Conn.Reducers.CreateMovementAction((int)mousePosition.x, (int)mousePosition.y);
+    }
+}
 
 	private void OnGUI()
 	{
