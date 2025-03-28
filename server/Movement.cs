@@ -4,7 +4,7 @@ public static partial class Module
 {
     private const uint MovementSpeed = 2;
 
-    [Table(Name = "movement_action", Public = true)]
+    [Table(Name = "Movement_action", Public = true)]
     public partial struct MovementAction
     {
         [PrimaryKey, AutoInc] public uint ActionId;
@@ -15,20 +15,20 @@ public static partial class Module
     [Reducer]
     public static void DoMovementAction(ReducerContext ctx, Tick tick, MovementAction movementAction)
     {
-        var player = ctx.Db.player.PlayerId.Find(movementAction.PlayerId) ??
+        var player = ctx.Db.Player.PlayerId.Find(movementAction.PlayerId) ??
                      throw new Exception("Player not found");
-        var character = ctx.Db.character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Player not found");
-        var entity = ctx.Db.entity.EntityId.Find(character.EntityId) ?? throw new Exception("Entity not found");
+        var character = ctx.Db.Character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Player not found");
+        var entity = ctx.Db.Entity.EntityId.Find(character.EntityId) ?? throw new Exception("Entity not found");
         var newPosition = MoveTowards(entity.Position, movementAction.Destination, MovementSpeed);
         Log.Info($"Moving {player.Name} to {newPosition.x}, {newPosition.y}");
         if (newPosition == movementAction.Destination)
         {
             Log.Info($"Finishing moving");
-            ctx.Db.movement_action.Delete(movementAction);
+            ctx.Db.Movement_action.Delete(movementAction);
         }
 
         entity.Position = newPosition;
-        ctx.Db.entity.EntityId.Update(entity);
+        ctx.Db.Entity.EntityId.Update(entity);
     }
 
     private static DbVector2 MoveTowards(DbVector2 current, DbVector2 target, uint speed)
@@ -58,15 +58,15 @@ public static partial class Module
     [Reducer]
     public static void CreateMovementAction(ReducerContext ctx, int x, int y)
     {
-        var tick = ctx.Db.tick.Iter().Last();
-        var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var existingAction = ctx.Db.movement_action.PlayerId.Find(player.PlayerId);
+        var tick = ctx.Db.Tick.Iter().Last();
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        var existingAction = ctx.Db.Movement_action.PlayerId.Find(player.PlayerId);
         if (existingAction is not null)
         {
-            ctx.Db.movement_action.Delete(existingAction.Value);
+            ctx.Db.Movement_action.Delete(existingAction.Value);
         }
 
-        var movementActionInsert = ctx.Db.movement_action.Insert(new MovementAction
+        var movementActionInsert = ctx.Db.Movement_action.Insert(new MovementAction
         {
             Destination = new DbVector2(x, y),
             PlayerId = player.PlayerId

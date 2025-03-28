@@ -3,7 +3,7 @@ using StdbModule;
 
 public static partial class Module
 {
-    [Table(Name = "color_spell_action")]
+    [Table(Name = "Color_spell_action")]
     public partial struct ColorSpellAction
     {
         [PrimaryKey, AutoInc] public uint ActionId;
@@ -14,7 +14,7 @@ public static partial class Module
         public ColorSpell Spell => BaseColorSpells.SpellSteps[SpellType];
     }
     
-    [Table(Name = "color_spell_state")]
+    [Table(Name = "Color_spell_state")]
     public partial struct ColorSpellState
     {
         [PrimaryKey] public uint ActionId;
@@ -24,9 +24,10 @@ public static partial class Module
     [Reducer]
     public static void DoColorSpellAction(ReducerContext ctx, ColorSpellAction action)
     {
-        if (Util.IsNotNull(ctx.Db.color_spell_state.ActionId.Find(action.ActionId), out var state))
+        if (Util.IsNull(ctx.Db.Color_spell_state.ActionId.Find(action.ActionId), out var state))
         {
-            ctx.Db.color_spell_state.Insert(new ColorSpellState
+            Log.Debug($"ActionId {action.ActionId} not found, creating entry in Color_spell_state");
+            ctx.Db.Color_spell_state.Insert(new ColorSpellState
             {
                 ActionId = action.ActionId,
                 SpellStep = 0
@@ -34,12 +35,18 @@ public static partial class Module
         }
         else
         {
+            Log.Debug($"ActionId {action.ActionId} found, incrementing spell step to {state.SpellStep + 1}");
             state.SpellStep += 1;
             var spell = action.Spell;
             if (state.SpellStep == spell.Length)
             {
-                ctx.Db.color_spell_state.Delete(state);
-                ctx.Db.color_spell_action.Delete(action);
+                Log.Debug($"Removing spell step ActionId: {state.ActionId}");
+                ctx.Db.Color_spell_state.ActionId.Delete(state.ActionId);
+                ctx.Db.Color_spell_action.Delete(action);
+            }
+            else
+            {
+                ctx.Db.Color_spell_state.ActionId.Update(state);
             }
         }
         
@@ -48,24 +55,27 @@ public static partial class Module
     [Reducer]
     public static void ApplyColorSpell(ReducerContext ctx, ColorSpellAction action)
     {
-        var state = ctx.Db.color_spell_state.ActionId.Find(action.ActionId) ?? throw new Exception("Spell state not found");
+        Log.Debug($"Applying color_spell action {action.ActionId}");
+        var state = ctx.Db.Color_spell_state.ActionId.Find(action.ActionId) ?? throw new Exception("Spell state not found");
         var spell = action.Spell;
-        var target = ctx.Db.character.PlayerId.Find(action.TargetCharacterId) ?? throw new Exception("Target player not found");
+        var target = ctx.Db.Character.PlayerId.Find(action.TargetCharacterId) ?? throw new Exception("Target player not found");
         // TODO: Calculate multiplier
         target.Health -= spell.Steps[state.SpellStep].Damage;
+        ctx.Db.Character.EntityId.Update(target);
+        Log.Debug($"Decremented target entity id {target.EntityId} by {spell.Steps[state.SpellStep].Damage}");
     }
 
     [Reducer]
     public static void CreateColorSpellAction(ReducerContext ctx, string color, string length, string targetName)
     {
-        var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var caster = ctx.Db.character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Character not found");
-        var targetPlayer = ctx.Db.player.Name.Filter(targetName).SingleOrDefault();
-        var target = ctx.Db.character.PlayerId.Find(targetPlayer.PlayerId) ??
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        var caster = ctx.Db.Character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Character not found");
+        var targetPlayer = ctx.Db.Player.Name.Filter(targetName).SingleOrDefault();
+        var target = ctx.Db.Character.PlayerId.Find(targetPlayer.PlayerId) ??
                      throw new Exception("Target character not found");
         Enum.TryParse(color, true, out Color inputColor);
         Enum.TryParse(length, true, out Length inputLength);
-        ctx.Db.color_spell_action.Insert(new ColorSpellAction
+        ctx.Db.Color_spell_action.Insert(new ColorSpellAction
         {
             CasterCharacterId = caster.EntityId,
             TargetCharacterId = target.EntityId,
@@ -82,8 +92,8 @@ public static partial class Module
 [Type]
 public partial record ColorSpellType
 {
-    public required Color Color { get; init; }
-    public required Length Length { get; init; }
+    public Color Color { get; init; }
+    public Length Length { get; init; }
 
     public virtual bool Equals(ColorSpellType? other)
     {
@@ -95,6 +105,12 @@ public partial record ColorSpellType
     public override int GetHashCode()
     {
         return HashCode.Combine((int)Color, (int)Length);
+    }
+
+    // TODO: currently the sql query for Color_spell_action prints the SpellStep incorrectly, testing if this ToString does anything
+    public override string ToString()
+    {
+        return Color +  " " + Length;
     }
 }
 
