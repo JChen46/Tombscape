@@ -1,7 +1,8 @@
 using SpacetimeDB;
 using Index = SpacetimeDB.Index;
 
-public static partial class Module
+public static partial class 
+    Module
 {
     private static readonly TimeSpan TickRate = TimeSpan.FromMilliseconds(600);
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using SpacetimeDB;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -20,7 +21,17 @@ public class GridManager : MonoBehaviour
     }
     void Start()
     {
-        // GenerateGrid();
+    }
+
+    public static void RegisterHandler()
+    {
+        
+        GameManager.Conn.Db.Entity.OnUpdate += (context, row, newRow) =>
+        {
+            var vector2 = new Vector2(newRow.Position.X, newRow.Position.Y);
+            Log.Info($"moving hero to {vector2}");
+            Instance._tiles.GetValueOrDefault(vector2).SetUnit(UnitManager.Instance.SelectedHero);
+        };
     }
     
     public void GenerateGrid()

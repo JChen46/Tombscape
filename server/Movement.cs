@@ -8,7 +8,7 @@ public static partial class Module
     public partial struct MovementAction
     {
         [PrimaryKey, AutoInc] public uint ActionId;
-        [Unique] public uint PlayerId;
+        public uint PlayerId;
         public DbVector2 Destination;
     }
 
@@ -60,11 +60,11 @@ public static partial class Module
     {
         var tick = ctx.Db.tick.Iter().Last();
         var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var existingAction = ctx.Db.movement_action.PlayerId.Find(player.PlayerId);
-        if (existingAction is not null)
-        {
-            ctx.Db.movement_action.Delete(existingAction.Value);
-        }
+        // var existingAction = ctx.Db.movement_action.PlayerId.Find(player.PlayerId);
+        // if (existingAction is not null)
+        // {
+            // ctx.Db.movement_action.Delete(existingAction.Value);
+        // }
 
         var movementActionInsert = ctx.Db.movement_action.Insert(new MovementAction
         {

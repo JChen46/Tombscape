@@ -30,6 +30,7 @@ public class UnitManager : MonoBehaviour
 
             randomSpawnTile.SetUnit(spawnedHero);
             Debug.Log("Spawned Hero: " + spawnedHero.name);
+            SelectedHero = spawnedHero;
         }
         
         GameManager.Instance.ChangeState(GameState.SpawnEnemies);
@@ -56,10 +57,9 @@ public class UnitManager : MonoBehaviour
         return (T)_units.Where(u => u.Faction == faction).OrderBy(o => Random.value).First().UnitPrefab;
     }
 
-    public void SetSelectedHero(BaseHero hero)
+    public void MoveToTile(Tile tile)
     {
-        SelectedHero = hero;
-        MenuManager.Instance.ShowSelectedHero(hero);
+        GameManager.Conn.Reducers.CreateMovementAction((int)tile.transform.position.x, (int)tile.transform.position.y);
     }
     
 }
