@@ -37,10 +37,21 @@ public static partial class Module
     }
 
     [Reducer]
-    public static void DoDisconnect(ReducerContext ctx)
+    public static void DoDisconnect(ReducerContext ctx, string? name = null)
     {
         Log.Debug($"User disconnected: {ctx.Sender}");
-        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        Player player;
+        if (name != null)
+        {
+            Player? foundPlayer = ctx.Db.Player.Name.Filter(name).FirstOrDefault();
+            if (foundPlayer == null) throw new Exception($"Player with name '{name}' not found");
+            player = foundPlayer.Value;
+        }
+        else
+        {
+            player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
+                     throw new Exception($"Player with ID '{ctx.Sender}' not found");
+        }
         var character = ctx.Db.Character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Character not found");
         var entity = ctx.Db.Entity.EntityId.Find(character.EntityId) ?? throw new Exception("Entity not found");
         ctx.Db.Player.Delete(player);
@@ -48,6 +59,8 @@ public static partial class Module
         ctx.Db.Entity.Delete(entity);
         ctx.Db.Logged_out_player.Insert(player);
     }
+    
+    
 
     [Reducer]
     public static void EnterGame(ReducerContext ctx, string name)
