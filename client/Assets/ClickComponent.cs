@@ -18,6 +18,7 @@ public class ClickComponent : MonoBehaviour
         Log.Info($"moving to {worldToCell}");
         databaseMediator.WhenConnected(() =>
         {
+            Log.Info($"creating movement action");
             databaseMediator.Conn.Reducers.CreateMovementAction(worldToCell.x, worldToCell.y);
         });
     }

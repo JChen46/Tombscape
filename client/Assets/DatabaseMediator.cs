@@ -55,7 +55,7 @@ public class DatabaseMediator : ScriptableObject
 
     public void Disconnect()
     {
-        Conn.Disconnect();
+        Conn?.Disconnect();
         _connected = false;
     }
     
@@ -70,6 +70,15 @@ public class DatabaseMediator : ScriptableObject
         Conn.SubscriptionBuilder()
             .OnApplied(HandleSubscriptionApplied)
             .SubscribeToAllTables();
+
+        Conn.Db.Player.OnInsert += (context, row) =>
+        {
+            Log.Info("Inserted.");
+        };
+        Conn.Db.Entity.OnInsert += (context, row) => 
+        {
+            Log.Info("Entity Inserted.");
+        };
     }
     
     private void HandleConnectError(Exception ex)
@@ -93,5 +102,10 @@ public class DatabaseMediator : ScriptableObject
         
         _connected = true;
         OnConnect?.Invoke();
+
+        Conn.Db.Player.OnInsert += (context, row) =>
+        {
+            Log.Info("Inserted.");
+        };
     }
 }

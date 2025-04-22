@@ -4,22 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c225f05-3135-4021-b2c7-1010928513c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.client/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.client/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.client/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.client/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../server/Util/Extensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../server/Util/Optional.cs" afterDir="false" />
+    <list default="true" id="7c225f05-3135-4021-b2c7-1010928513c6" name="Changes" comment="Big mess but use ScriptableObjects and components">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.client/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.client/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ClickComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ClickComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DatabaseMediator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DatabaseMediator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/EntityPositionUpdater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/EntityPositionUpdater.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Managers/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Managers/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Managers/GameManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Managers/GameManager.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Managers/GridManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Managers/GridManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Managers/UnitManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Managers/UnitManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PlayerComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PlayerComponent.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/Connect.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/Connect.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/CreateMovementAction.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/CreateMovementAction.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/Disconnect.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/Disconnect.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/DoConnect.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/DoConnect.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/DoDisconnect.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/DoDisconnect.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/DoMovementAction.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/DoMovementAction.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/EndTick.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/EndTick.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/EnterGame.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/EnterGame.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/Test.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/Test.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Reducers/TestUpdate.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Reducers/TestUpdate.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/SpacetimeDBClient.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/SpacetimeDBClient.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/Character.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/Character.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/Config.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/Config.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/Entity.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/Entity.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/LoggedOutPlayer.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/LoggedOutPlayer.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/MovementAction.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/MovementAction.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/Player.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/Player.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Tables/Tick.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Tables/Tick.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/Character.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/Character.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/Config.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/Config.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/DbVector2.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/DbVector2.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/Entity.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/Entity.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/MovementAction.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/MovementAction.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/Player.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/Player.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/autogen/Types/Tick.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/autogen/Types/Tick.g.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/Connection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../server/Connection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/Lib.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../server/Lib.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../server/Movement.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +51,11 @@
     <option name="firstShow" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="demoGrid" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -47,8 +73,6 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Temp/SourceGeneratedDocuments/3937C1EE1CB317B381EA9D7C/SpacetimeDB.BSATN.Codegen/SpacetimeDB.Codegen.Type/SpacetimeDB.Types.Player.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/02/350775c1/UnityEvent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/0b/6b612cfa/MonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
@@ -61,6 +85,8 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.clockworklabs.spacetimedbsdk@53c3f2e3c468/src/Table.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.tilemap.extras@13634da7dbe0/Runtime/GridInformation/GridInformation.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.tilemap.extras@13634da7dbe0/Runtime/Tiles/RuleTile/RuleTile.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/chroe/Documents/Mine/GitHub/Tombscape/server/Connection.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../server/Connection.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProjectColorInfo">{
@@ -74,21 +100,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Attach to Unity Editor.Attach to Unity Editor &amp; Play.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Standalone Player.Start Unity.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;demoGrid&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Attach to Unity Editor.Attach to Unity Editor & Play.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Standalone Player.Start Unity.executor": "Debug",
+    "git-widget-placeholder": "chrisMess",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor &amp; Play">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="F:\Programs\Unity\Hub\6000.0.41f1\Editor\Unity.exe" />
@@ -106,13 +132,15 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="27816">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="27816" />
       <option name="projectPathOnTarget" />
       <option name="runtimes">
-        <list />
+        <list>
+          <MonoRuntime />
+        </list>
       </option>
       <option name="selectedOptions">
         <list />
@@ -144,8 +172,17 @@
       <workItem from="1744480163452" duration="19802000" />
       <workItem from="1744855310470" duration="1202000" />
       <workItem from="1744856594395" duration="1846000" />
-      <workItem from="1745286231409" duration="3696000" />
+      <workItem from="1745286231409" duration="11384000" />
     </task>
+    <task id="LOCAL-00001" summary="Big mess but use ScriptableObjects and components">
+      <option name="closed" value="true" />
+      <created>1745290112920</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1745290112920</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,22 +209,37 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Big mess but use ScriptableObjects and components" />
+    <option name="LAST_COMMIT_MESSAGE" value="Big mess but use ScriptableObjects and components" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/DatabaseMediator.cs</url>
-          <line>22</line>
-          <properties documentPath="C:\Users\chroe\Documents\Mine\GitHub\Tombscape\client\Assets\DatabaseHandler.cs" containingFunctionPresentation="Property '_connected'">
+          <line>107</line>
+          <properties documentPath="C:\Users\chroe\Documents\Mine\GitHub\Tombscape\client\Assets\DatabaseMediator.cs" containingFunctionPresentation="Lambda expression inside Method 'HandleSubscriptionApplied'">
             <startOffsets>
-              <option value="620" />
+              <option value="3003" />
             </startOffsets>
             <endOffsets>
-              <option value="641" />
+              <option value="3025" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="9" />
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/EntityPositionUpdater.cs</url>
+          <line>23</line>
+          <properties documentPath="C:\Users\chroe\Documents\Mine\GitHub\Tombscape\client\Assets\EntityPositionUpdater.cs" containingFunctionPresentation="Lambda expression inside Method 'Start'">
+            <startOffsets>
+              <option value="754" />
+            </startOffsets>
+            <endOffsets>
+              <option value="807" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="44" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

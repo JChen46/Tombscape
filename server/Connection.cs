@@ -64,6 +64,6 @@ public static partial class Module
             EntityId = entity.EntityId,
             PlayerId = player.PlayerId
         });
-        Log.Info($"Player {name} entered");
+        Log.Info($"Player {name} entered with character {character.EntityId} and player {player.PlayerId}");
     }
 }

@@ -12,12 +12,12 @@ namespace SpacetimeDB.Types
 {
     public sealed partial class RemoteReducers : RemoteBase
     {
-        public delegate void DoMovementActionHandler(ReducerEventContext ctx, Tick tick, MovementAction movementAction);
+        public delegate void DoMovementActionHandler(ReducerEventContext ctx, MovementAction movementAction);
         public event DoMovementActionHandler? OnDoMovementAction;
 
-        public void DoMovementAction(Tick tick, MovementAction movementAction)
+        public void DoMovementAction(MovementAction movementAction)
         {
-            conn.InternalCallReducer(new Reducer.DoMovementAction(tick, movementAction), this.SetCallReducerFlags.DoMovementActionFlags);
+            conn.InternalCallReducer(new Reducer.DoMovementAction(movementAction), this.SetCallReducerFlags.DoMovementActionFlags);
         }
 
         public bool InvokeDoMovementAction(ReducerEventContext ctx, Reducer.DoMovementAction args)
@@ -25,7 +25,6 @@ namespace SpacetimeDB.Types
             if (OnDoMovementAction == null) return false;
             OnDoMovementAction(
                 ctx,
-                args.Tick,
                 args.MovementAction
             );
             return true;
@@ -38,23 +37,16 @@ namespace SpacetimeDB.Types
         [DataContract]
         public sealed partial class DoMovementAction : Reducer, IReducerArgs
         {
-            [DataMember(Name = "tick")]
-            public Tick Tick;
             [DataMember(Name = "movementAction")]
             public MovementAction MovementAction;
 
-            public DoMovementAction(
-                Tick Tick,
-                MovementAction MovementAction
-            )
+            public DoMovementAction(MovementAction MovementAction)
             {
-                this.Tick = Tick;
                 this.MovementAction = MovementAction;
             }
 
             public DoMovementAction()
             {
-                this.Tick = new();
                 this.MovementAction = new();
             }
 

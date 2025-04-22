@@ -1,3 +1,4 @@
+using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -7,21 +8,23 @@ public class EntityPositionUpdater : MonoBehaviour
 {
     [SerializeField] private DatabaseMediator databaseMediator;
     private RemoteTables Db => databaseMediator.Conn.Db;
+    public GameManager gameManager;
 
-    private Character _character;
-    private Tilemap _tilemap;
+    private CharacterComponent _character;
+    public Tilemap tilemap;
 
     private void Start()
     {
-        _character = GetComponent<CharacterComponent>().Character;
-        _tilemap = GetComponentInParent<Tilemap>();
-        databaseMediator.WhenConnected(() =>
+        _character = GetComponent<CharacterComponent>();
+        gameManager.WhenEntered(() =>
         {
             Db.Entity.OnUpdate += (context, row, newRow) =>
             {
-                if (_character.EntityId == newRow.EntityId)
+                Log.Info($"Updating position of entity {newRow.EntityId} to {newRow.Position.X}, {newRow.Position.Y}");
+                if (_character.Character.EntityId == newRow.EntityId)
                 {
-                    transform.position = _tilemap.CellToWorld(new Vector3Int(newRow.Position.X, newRow.Position.Y));
+                    var newPos = tilemap.CellToWorld(new Vector3Int(newRow.Position.X, newRow.Position.Y));
+                    transform.position = new Vector3(newPos.x + 0.5f, newPos.y + 0.5f, transform.position.z);
                 }
             };
         });

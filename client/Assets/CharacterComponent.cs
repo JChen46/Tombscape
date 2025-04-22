@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 public class CharacterComponent : MonoBehaviour
 {
     [SerializeField] private DatabaseMediator databaseMediator;
+    public GameManager gameManager;
     
     private PlayerComponent _playerComponent;
     public Character Character;
@@ -14,9 +15,10 @@ public class CharacterComponent : MonoBehaviour
     void Start()
     {
         _playerComponent = GetComponent<PlayerComponent>();
-        databaseMediator.WhenConnected(() =>
+        gameManager.WhenEntered(() =>
         {
-            Character = databaseMediator.Conn.Db.Character.PlayerId.Find(_playerComponent.PlayerId) ?? throw new Exception("Player not found");
+            Log.Info("Found character");
+            Character = databaseMediator.Conn.Db.Character.PlayerId.Find(_playerComponent.PlayerId) ?? throw new Exception($"Player not found {_playerComponent.PlayerId}");
         });
     }
 }

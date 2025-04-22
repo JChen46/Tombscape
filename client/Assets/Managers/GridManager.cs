@@ -22,12 +22,12 @@ public class GridManager : MonoBehaviour
     {
         DatabaseMediator.WhenConnected(() =>
         {
-            DatabaseMediator.Conn.Db.Entity.OnUpdate += (context, row, newRow) =>
-            {
-                var vector2 = new Vector2(newRow.Position.X, newRow.Position.Y);
-                Log.Info($"moving hero to {vector2}");
-                Instance._tiles.GetValueOrDefault(vector2).SetUnit(UnitManager.Instance.SelectedHero);
-            };
+            // DatabaseMediator.Conn.Db.Entity.OnUpdate += (context, row, newRow) =>
+            // {
+            //     var vector2 = new Vector2(newRow.Position.X, newRow.Position.Y);
+            //     Log.Info($"moving hero to {vector2}");
+            //     Instance._tiles.GetValueOrDefault(vector2).SetUnit(UnitManager.Instance.SelectedHero);
+            // };
         });
     }
 
