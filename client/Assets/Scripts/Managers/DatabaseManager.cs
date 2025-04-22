@@ -45,7 +45,10 @@ public class DatabaseManager : MonoBehaviour
         Conn.SubscriptionBuilder()
             .OnApplied(HandleSubscriptionApplied)
             .SubscribeToAllTables();
-        
+
+        // Get player param after it's inserted into table - DOESN'T WORK
+        // Conn.Db.Player.OnInsert += PlayerOnInsert;
+
         // ChangeState(GameState.GenerateGrid);
         // GridManager.RegisterHandler();
     }
@@ -75,29 +78,21 @@ public class DatabaseManager : MonoBehaviour
         // Call enter game with the player name
         Debug.Log("Entering game as testPlayer");
         ctx.Reducers.EnterGame("testPlayer");
+        
+        ctx.Reducers.OnEnterGame += (ctx, row) => // works?
+        {
+            Debug.Log($"Entering game as testPlayer using Identity: {LocalIdentity}");
+            var player = Conn.Db.Player.Identity.Find(LocalIdentity) ?? throw new Exception("Player not found");
+            Debug.Log($"- Player name: {player.Name}, player id: {player.PlayerId}");
+        };
+        
+        // TileEvents.RaiseTest();
     }
     
-    // public void ChangeState(GameState newState)
+    // private static void PlayerOnInsert(EventContext context, Player insertedPlayerValue) // runs twice? once on startup and once on insert
     // {
-    //     Debug.Log("Entering ChangeState with state: " + newState);
-    //     GameState = newState;
-    //     switch (newState)
-    //     {
-    //         case GameState.GenerateGrid:
-    //             GridManager.Instance.GenerateGrid();
-    //             break;
-    //         case GameState.SpawnHeroes:
-    //             UnitManager.Instance.SpawnHeroes();
-    //             break;
-    //         case GameState.SpawnEnemies:
-    //             UnitManager.Instance.SpawnEnemies();
-    //             break;
-    //         case GameState.HeroesTurn:
-    //             break;
-    //         case GameState.EnemiesTurn:
-    //             break;
-    //         default:
-    //             throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-    //     }
+    //     Debug.Log($"PlayerOnInsert using Identity: {LocalIdentity}");
+    //     var player = Conn.Db.Player.Identity.Find(LocalIdentity) ?? throw new Exception("Player not found");
+    //     Debug.Log($"Player name: {player.Name}, player id: {player.PlayerId}");
     // }
 }

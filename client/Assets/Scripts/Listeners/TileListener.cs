@@ -1,3 +1,6 @@
+using System;
+using SpacetimeDB;
+using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -18,6 +21,7 @@ public class TileListener : MonoBehaviour
     void OnDisable()
     {
         TileEvents.OnTileHovered -= HandleTileHovered;
+        TileEvents.OnTileClicked -= HandleTileClicked;
         TileEvents.OnTileExit -= HandleTileExit;
     }
 
@@ -41,10 +45,12 @@ public class TileListener : MonoBehaviour
             Debug.Log("Tile is not a GroundRuleTile");
         }
         tilemap.SetTile(tilePos, null); // deletes tile
+        highlighter.SetActive(false); // part of deleting the tile
     }
 
     void HandleTileExit(Vector3Int tilePos)
     {
         highlighter.SetActive(false);
     }
+
 }

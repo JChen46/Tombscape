@@ -15,7 +15,6 @@ public class MouseManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) // if LMB pressed
         {
             TileEvents.RaiseTileClicked(gridPos);
-            TileEvents.RaiseTileExit(gridPos);
         }
         if (gridPos != lastHoveredTile)
         {

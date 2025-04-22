@@ -1,4 +1,6 @@
 using System;
+using SpacetimeDB;
+using SpacetimeDB.Types;
 using UnityEngine;
 
 public static class TileEvents
@@ -11,4 +13,5 @@ public static class TileEvents
     
     public static void RaiseTileClicked(Vector3Int tilePos) => OnTileClicked?.Invoke(tilePos);
     public static void RaiseTileExit(Vector3Int tilePos) => OnTileExit?.Invoke(tilePos);
+    
 }
