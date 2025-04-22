@@ -7,10 +7,9 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
     [SerializeField] private int _width, _height;
-
     [SerializeField] private Tile _grassTile, _mountainTile;
-
     [SerializeField] private Transform _cam;
+    [field: SerializeField] public DatabaseMediator DatabaseMediator { get; set; }
 
     private Dictionary<Vector2, Tile> _tiles;
 
@@ -21,17 +20,19 @@ public class GridManager : MonoBehaviour
     }
     void Start()
     {
+        DatabaseMediator.WhenConnected(() =>
+        {
+            DatabaseMediator.Conn.Db.Entity.OnUpdate += (context, row, newRow) =>
+            {
+                var vector2 = new Vector2(newRow.Position.X, newRow.Position.Y);
+                Log.Info($"moving hero to {vector2}");
+                Instance._tiles.GetValueOrDefault(vector2).SetUnit(UnitManager.Instance.SelectedHero);
+            };
+        });
     }
 
     public static void RegisterHandler()
     {
-        
-        GameManager.Conn.Db.Entity.OnUpdate += (context, row, newRow) =>
-        {
-            var vector2 = new Vector2(newRow.Position.X, newRow.Position.Y);
-            Log.Info($"moving hero to {vector2}");
-            Instance._tiles.GetValueOrDefault(vector2).SetUnit(UnitManager.Instance.SelectedHero);
-        };
     }
     
     public void GenerateGrid()
@@ -52,8 +53,6 @@ public class GridManager : MonoBehaviour
         }
         
         _cam.transform.position = new Vector3((float)_width / 2 - 0.5f, (float)_height / 2 - 0.5f, -10);
-        
-        GameManager.Instance.ChangeState(GameState.SpawnHeroes);
     }
 
     public Tile GetHeroSpawnTile()

@@ -80,11 +80,10 @@ public static partial class
     [Reducer]
     public static void EndTick(ReducerContext ctx, Tick tick)
     {
+        var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
+        Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
         try
         {
-
-            var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
-            Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
             ctx.Db.tick.Insert(new Tick
             {
                 ScheduleAt = new ScheduleAt.Time(nextTick),
@@ -92,7 +91,7 @@ public static partial class
             });
             foreach (var movementAction in ctx.Db.movement_action.Iter())
             {
-                DoMovementAction(ctx, tick, movementAction);
+                DoMovementAction(ctx, movementAction);
             }
         }
         catch (Exception e)

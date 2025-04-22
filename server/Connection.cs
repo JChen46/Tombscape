@@ -40,7 +40,7 @@ public static partial class Module
     {
         Log.Debug($"User disconnected: {ctx.Sender}");
         var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var character = ctx.Db.character.PlayerId.Find(player.PlayerId) ?? throw new Exception("Character not found");
+        var character = ctx.Db.character.PlayerId.Find(player.PlayerId) ?? throw new Exception($"Character not found {player.PlayerId}");
         var entity = ctx.Db.entity.EntityId.Find(character.EntityId) ?? throw new Exception("Entity not found");
         ctx.Db.player.Delete(player);
         ctx.Db.character.Delete(character);

@@ -32,8 +32,6 @@ public class UnitManager : MonoBehaviour
             Debug.Log("Spawned Hero: " + spawnedHero.name);
             SelectedHero = spawnedHero;
         }
-        
-        GameManager.Instance.ChangeState(GameState.SpawnEnemies);
     }
     public void SpawnEnemies()
     {
@@ -47,7 +45,6 @@ public class UnitManager : MonoBehaviour
             randomSpawnTile.SetUnit(spawnedEnemy);
             Debug.Log("Spawned Enemy: " + spawnedEnemy.name);
         }
-        GameManager.Instance.ChangeState(GameState.HeroesTurn);
 
     }
 
@@ -59,7 +56,7 @@ public class UnitManager : MonoBehaviour
 
     public void MoveToTile(Tile tile)
     {
-        GameManager.Conn.Reducers.CreateMovementAction((int)tile.transform.position.x, (int)tile.transform.position.y);
+        // GameManager.Conn.Reducers.CreateMovementAction((int)tile.transform.position.x, (int)tile.transform.position.y);
     }
     
 }

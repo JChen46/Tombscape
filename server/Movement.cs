@@ -1,4 +1,5 @@
-﻿using SpacetimeDB;
+﻿using Extensions;
+using SpacetimeDB;
 
 public static partial class Module
 {
@@ -8,12 +9,12 @@ public static partial class Module
     public partial struct MovementAction
     {
         [PrimaryKey, AutoInc] public uint ActionId;
-        public uint PlayerId;
+        [SpacetimeDB.Index.BTree] public uint PlayerId;
         public DbVector2 Destination;
     }
 
     [Reducer]
-    public static void DoMovementAction(ReducerContext ctx, Tick tick, MovementAction movementAction)
+    public static void DoMovementAction(ReducerContext ctx, MovementAction movementAction)
     {
         var player = ctx.Db.player.PlayerId.Find(movementAction.PlayerId) ??
                      throw new Exception("Player not found");
@@ -60,11 +61,11 @@ public static partial class Module
     {
         var tick = ctx.Db.tick.Iter().Last();
         var player = ctx.Db.player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        // var existingAction = ctx.Db.movement_action.PlayerId.Find(player.PlayerId);
-        // if (existingAction is not null)
-        // {
-            // ctx.Db.movement_action.Delete(existingAction.Value);
-        // }
+        var existingAction = ctx.Db.movement_action.PlayerId.Filter(player.PlayerId).TryGetFirst();
+        if (existingAction is not null)
+        {
+            ctx.Db.movement_action.Delete(existingAction.Value);
+        }
 
         var movementActionInsert = ctx.Db.movement_action.Insert(new MovementAction
         {
