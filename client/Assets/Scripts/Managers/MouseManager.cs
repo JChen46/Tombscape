@@ -16,18 +16,19 @@ public class MouseManager : MonoBehaviour
         {
             TileEvents.RaiseTileClicked(gridPos);
         }
-        if (gridPos != lastHoveredTile)
+        
+        if (gridPos != lastHoveredTile) // TODO: figure out how to only highlight one thing at a time
         {
             if (tilemap.HasTile(gridPos))
             {
-                Debug.Log("Raising tile hovered");
+                // Debug.Log("Raising tile hovered");
                 TileEvents.RaiseTileHovered(gridPos);
 
                 lastHoveredTile = gridPos;
             }
             else if(tilemap.HasTile(lastHoveredTile))
             {
-                Debug.Log("Raising tile exited");
+                // Debug.Log("Raising tile exited");
                 TileEvents.RaiseTileExit(gridPos);
                 lastHoveredTile = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
             }

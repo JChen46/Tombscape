@@ -6,7 +6,8 @@ public static partial class Module
     [Reducer(ReducerKind.ClientConnected)]
     public static void Connect(ReducerContext ctx)
     {
-        // DoConnect(ctx);
+        Log.Debug($"User Connection detected: {ctx.Sender}");
+        DoConnect(ctx);
     }
 
     [Reducer]
@@ -33,13 +34,14 @@ public static partial class Module
     [Reducer(ReducerKind.ClientDisconnected)]
     public static void Disconnect(ReducerContext ctx)
     {
-        // DoDisconnect(ctx);
+        Log.Debug($"User disconnected: {ctx.Sender}");
+        DoDisconnect(ctx);
     }
 
     [Reducer]
     public static void DoDisconnect(ReducerContext ctx, string? name = null)
     {
-        Log.Debug($"User disconnected: {ctx.Sender}");
+        Log.Debug($"DoDisconnect for user: {ctx.Sender}");
         Player player;
         if (name != null)
         {

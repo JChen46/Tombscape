@@ -9,6 +9,8 @@ public class MapManager : MonoBehaviour
 
     private Dictionary<TileBase, TileData> tileDictionary;
 
+    // TODO: Get spawnable tiles function
+    
     // private void Awake()
     // {
     //     tileDictionary = new Dictionary<TileBase, TileData>();
