@@ -24,9 +24,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("Starting GameManager...");
         Application.targetFrameRate = 60;
         
+        // TODO: Figure out how to move this spawning logic elsewhere
         databaseMediator.Connect();
         databaseMediator.WhenConnected(() =>
         {
+            // TODO: call spawn dummy reducer for testing purposes
             Log.Info("Adding handlers");
             databaseMediator.Conn.Reducers.EnterGame("testPlayer");
             databaseMediator.Conn.Reducers.OnEnterGame += (context, row) =>

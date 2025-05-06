@@ -4,12 +4,13 @@ using SpacetimeDB.Types;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpawnMediator", menuName = "Scriptable Objects/SpawnMediator")]
+// TODO: Should this spawn mediator even be a scriptable object? To store the _players dictionary?
 public class SpawnMediator : ScriptableObject
 {
     [SerializeField] private GameObject playerPrefab;
 
     // Dictionary with entityId key, game object value
-    private readonly Dictionary<uint, GameObject> _players = new();
+    private readonly Dictionary<uint, GameObject> _entities = new();
     
     public void SpawnPlayer(Vector3 spawnPosition, Identity playerIdentity, Player player, Entity entity)
     {
@@ -28,7 +29,7 @@ public class SpawnMediator : ScriptableObject
             playerInfo.Position = Vector3Int.FloorToInt(spawnPosition); // Caution: may have unintended side-effects
             spawnedPlayer.Init(playerInfo);
             
-            _players.Add(entity.EntityId, playerGameObject);
+            _entities.Add(entity.EntityId, playerGameObject);
         }
         else
         {
@@ -36,13 +37,13 @@ public class SpawnMediator : ScriptableObject
         }
     }
 
-    public void DeletePlayer(uint entityId)
+    public void DeleteEntity(uint entityId)
     {
-        if (_players.TryGetValue(entityId, out var gameObjectToBeDeleted))
+        if (_entities.TryGetValue(entityId, out var gameObjectToBeDeleted))
         {
             Destroy(gameObjectToBeDeleted);
         }
-        _players.Remove(entityId);
+        _entities.Remove(entityId);
         
     }
 }

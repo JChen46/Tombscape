@@ -25,6 +25,6 @@ public class EntityListener : MonoBehaviour
     void HandleEntityDeleted(uint entityId)
     {
         Debug.Log($"Entity {entityId} deleted.");
-        spawnMediator.DeletePlayer(entityId);
+        spawnMediator.DeleteEntity(entityId);
     }
 }
