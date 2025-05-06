@@ -1,4 +1,6 @@
-﻿namespace StdbModule;
+﻿using SpacetimeDB;
+
+namespace StdbModule;
 
 public static class Util
 {
@@ -34,5 +36,33 @@ public static class Util
         }
 
         return hexString;
+    }
+
+    public static string LogDbVector2(DbVector2 vector)
+    {
+        return $"x: {vector.x}, y: {vector.y}";
+    }
+
+    // public static void DebugLogTableData( ITableView tableCtx, string tableName = "") 
+    // {
+    //     Log.Debug($"Table {tableName} count: {tableCtx.Count}");
+    // }
+    
+    
+}
+
+public static class EnumerableExtensions
+{
+    public static T? TryGetFirst<T>(this IEnumerable<T> source) where T : struct
+    {
+        using var enumerator = source.GetEnumerator();
+        if (enumerator.MoveNext())
+        {
+            return enumerator.Current;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

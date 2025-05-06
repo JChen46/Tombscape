@@ -7,7 +7,7 @@ public class MapManager : MonoBehaviour
 {
     [SerializeField] private Tilemap map;
 
-    private Dictionary<TileBase, TileData> tileDictionary;
+    // private Dictionary<TileBase, TileData> tileDictionary;
 
     // TODO: Get spawnable tiles function
     

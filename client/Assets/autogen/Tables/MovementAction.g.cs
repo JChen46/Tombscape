@@ -26,14 +26,14 @@ namespace SpacetimeDB.Types
 
             public readonly ActionIdUniqueIndex ActionId;
 
-            public sealed class PlayerIdUniqueIndex : UniqueIndexBase<uint>
+            public sealed class PlayerIdIndex : BTreeIndexBase<uint>
             {
                 protected override uint GetKey(MovementAction row) => row.PlayerId;
 
-                public PlayerIdUniqueIndex(MovementActionHandle table) : base(table) { }
+                public PlayerIdIndex(MovementActionHandle table) : base(table) { }
             }
 
-            public readonly PlayerIdUniqueIndex PlayerId;
+            public readonly PlayerIdIndex PlayerId;
 
             internal MovementActionHandle(DbConnection conn) : base(conn)
             {

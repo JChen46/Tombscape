@@ -12,19 +12,20 @@ namespace SpacetimeDB.Types
 {
     public sealed partial class RemoteReducers : RemoteBase
     {
-        public delegate void DoDisconnectHandler(ReducerEventContext ctx);
+        public delegate void DoDisconnectHandler(ReducerEventContext ctx, string? name);
         public event DoDisconnectHandler? OnDoDisconnect;
 
-        public void DoDisconnect()
+        public void DoDisconnect(string? name)
         {
-            conn.InternalCallReducer(new Reducer.DoDisconnect(), this.SetCallReducerFlags.DoDisconnectFlags);
+            conn.InternalCallReducer(new Reducer.DoDisconnect(name), this.SetCallReducerFlags.DoDisconnectFlags);
         }
 
         public bool InvokeDoDisconnect(ReducerEventContext ctx, Reducer.DoDisconnect args)
         {
             if (OnDoDisconnect == null) return false;
             OnDoDisconnect(
-                ctx
+                ctx,
+                args.Name
             );
             return true;
         }
@@ -36,6 +37,18 @@ namespace SpacetimeDB.Types
         [DataContract]
         public sealed partial class DoDisconnect : Reducer, IReducerArgs
         {
+            [DataMember(Name = "name")]
+            public string? Name;
+
+            public DoDisconnect(string? Name)
+            {
+                this.Name = Name;
+            }
+
+            public DoDisconnect()
+            {
+            }
+
             string IReducerArgs.ReducerName => "DoDisconnect";
         }
     }

@@ -24,7 +24,7 @@ public class PlayerData : MonoBehaviour
         _tilemap = GameObject.FindGameObjectWithTag("Tilemap").GetComponent<Tilemap>();
     }
     
-    private void Start() // TODO: figure out issue with spam clicking movement actions, "An item with the same key has already been added"
+    private void Start() 
     {
         databaseMediator.WhenConnected(() =>
         {
@@ -56,3 +56,7 @@ public class PlayerData : MonoBehaviour
         highlighter.SetActive(false);
     }
 }
+
+// TODO: visual key input system prototype
+// TODO: color visual line attacks + backend logic functionality runnable
+// TODO: target highlight/selection

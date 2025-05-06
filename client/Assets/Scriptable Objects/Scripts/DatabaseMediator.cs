@@ -73,7 +73,10 @@ public class DatabaseMediator : ScriptableObject
         {
             Log.Info($"Entity Inserted with ID: {row.EntityId}");
         };
-        
+        Conn.Db.Entity.OnDelete += (context, row) =>
+        {
+            EntityEvents.RaiseEntityDeleted(row.EntityId);
+        };
     }
     
     private void HandleConnectError(Exception ex)
@@ -83,7 +86,7 @@ public class DatabaseMediator : ScriptableObject
     
     private void HandleDisconnect(DbConnection conn, Exception ex)
     {
-        conn.Reducers.DoDisconnect();
+        conn.Reducers.DoDisconnect(null);
         _connected = false;
         Conn?.Disconnect();
         Debug.Log("Disconnected.");

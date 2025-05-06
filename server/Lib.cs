@@ -84,7 +84,7 @@ public static partial class Module
         try
         {
             var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
-            Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(tick.EndTime)}");
+            Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(ctx.Timestamp)}");
             ctx.Db.Tick.Insert(new Tick
             {
                 ScheduleAt = new ScheduleAt.Time(nextTick),

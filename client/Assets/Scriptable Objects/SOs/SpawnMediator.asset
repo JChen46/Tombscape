@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6408fea3dad8364da4f5e058eac6e7c, type: 3}
   m_Name: SpawnMediator
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 0}
-  playerInfos: []
+  playerPrefab: {fileID: 7375195151833332836, guid: 244e2ccbd54f28f4880a0f1f33adc295, type: 3}

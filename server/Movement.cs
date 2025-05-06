@@ -1,4 +1,5 @@
 ﻿using SpacetimeDB;
+using StdbModule;
 
 public static partial class Module
 {
@@ -8,7 +9,7 @@ public static partial class Module
     public partial struct MovementAction
     {
         [PrimaryKey, AutoInc] public uint ActionId;
-        [Unique] public uint PlayerId;
+        [SpacetimeDB.Index.BTree] public uint PlayerId;
         public DbVector2 Destination;
     }
 
@@ -58,14 +59,23 @@ public static partial class Module
     [Reducer]
     public static void CreateMovementAction(ReducerContext ctx, int x, int y)
     {
+        Log.Info("Begin CreateMovementAction");
         var tick = ctx.Db.Tick.Iter().Last();
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        var existingAction = ctx.Db.Movement_action.PlayerId.Find(player.PlayerId);
+        var existingAction = ctx.Db.Movement_action.PlayerId.Filter(player.PlayerId).TryGetFirst();
         if (existingAction is not null)
         {
+            Log.Info($"Deleting action id: {existingAction.Value.ActionId}");
             ctx.Db.Movement_action.Delete(existingAction.Value);
         }
-
+        
+        // log out table data
+        // Log.Info($"Current # of rows in Movement_action: {ctx.Db.Movement_action.Count}");
+        // foreach (MovementAction row in ctx.Db.Movement_action.Iter())
+        // {
+        //     Log.Info($"ActionId: {row.ActionId}, PlayerId: {row.PlayerId}, Destination: {Util.LogDbVector2(row.Destination)}");
+        // }
+        
         var movementActionInsert = ctx.Db.Movement_action.Insert(new MovementAction
         {
             Destination = new DbVector2(x, y),

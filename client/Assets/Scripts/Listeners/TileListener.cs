@@ -8,6 +8,7 @@ public class TileListener : MonoBehaviour
 {
     [SerializeField] public Tilemap tilemap;
     [SerializeField] public GameObject highlighter;
+    [SerializeField] private DatabaseMediator databaseMediator;
 
     // private Vector3Int? currentTile = null;
 
@@ -39,13 +40,14 @@ public class TileListener : MonoBehaviour
         if (groundRuleTile != null)
         {
             Debug.Log($"Clicked tile at {tilePos}; walkable: {groundRuleTile.isWalkable}");
+            databaseMediator.Conn.Reducers.CreateMovementAction(tilePos.x, tilePos.y);
         }
         else
         {
             Debug.Log("Tile is not a GroundRuleTile");
         }
-        tilemap.SetTile(tilePos, null); // deletes tile
-        highlighter.SetActive(false); // part of deleting the tile
+        // tilemap.SetTile(tilePos, null); // deletes tile
+        // highlighter.SetActive(false); // part of deleting the tile
     }
 
     void HandleTileExit(Vector3Int tilePos)
