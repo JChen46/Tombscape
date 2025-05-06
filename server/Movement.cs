@@ -1,5 +1,5 @@
-﻿using Extensions;
-using SpacetimeDB;
+﻿using SpacetimeDB;
+using StdbModule.Util;
 
 public static partial class Module
 {

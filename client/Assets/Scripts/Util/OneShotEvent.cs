@@ -22,6 +22,10 @@ namespace Util
 
         public void Invoke()
         {
+            if (_invoked)
+            {
+                return;
+            }
             OnInvoked?.Invoke();
             _invoked = true;
         }

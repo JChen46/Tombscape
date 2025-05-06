@@ -8,7 +8,7 @@ public class OtherCharacterManager : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private DatabaseMediator databaseMediator;
-    [SerializeField] private GameObject otherCharacterPrefab;
+    [SerializeField] private OtherPlayerCharacter otherCharacterPrefab;
     
     private readonly Dictionary<uint, OtherPlayerCharacter> _characters = new();
 
@@ -30,6 +30,8 @@ public class OtherCharacterManager : MonoBehaviour
             databaseMediator.Conn.Db.Character.OnDelete += (context, row) =>
             {
                 Log.Info($"Removing character {row.EntityId}");
+                _characters.TryGetValue(row.EntityId, out var value);
+                if (value) Destroy(value.gameObject);
                 _characters.Remove(row.EntityId);
             };
         });
@@ -44,11 +46,10 @@ public class OtherCharacterManager : MonoBehaviour
             return;
         }
         var entity = databaseMediator.Conn.Db.Entity.EntityId.Find(character.EntityId) ?? throw new Exception("Entity not found");
-        var newCharacterObject = Instantiate(otherCharacterPrefab, Vector3.zero, Quaternion.identity);
-        var newCharacter = newCharacterObject.GetComponent<OtherPlayerCharacter>();
+        var newCharacter = Instantiate(otherCharacterPrefab, Vector3.zero, Quaternion.identity);
         newCharacter.Entity = entity;
         newCharacter.Player = player;
-        newCharacterObject.SetActive(true);
+        newCharacter.gameObject.SetActive(true);
         _characters.Add(character.EntityId, newCharacter);
     }
 }

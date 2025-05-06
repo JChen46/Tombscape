@@ -1,9 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using StdbModule.Util;
-
-namespace Extensions
+﻿namespace StdbModule.Util
 {
-    public static class IEnumerableExtensions
+    public static class EnumerableExtensions
     {
         public static T? TryGetFirst<T>(this IEnumerable<T> source) where T : struct
         {

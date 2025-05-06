@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f5fbdc2eb208124dbec349683be7744, type: 3}
   m_Name: LocalDatabaseHandler
   m_EditorClassIdentifier: 
-  connectionString: http://127.0.0.1:3000
+  connectionString: http://127.0.0.1:3001
   moduleName: tombscape
