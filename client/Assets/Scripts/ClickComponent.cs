@@ -16,7 +16,7 @@ public class ClickComponent : MonoBehaviour
     {
         var worldToCell = _tilemap.WorldToCell(transform.position);
         Log.Info($"moving to {worldToCell}");
-        databaseMediator.WhenConnected(() =>
+        databaseMediator.OnConnect.Subscribe(() =>
         {
             Log.Info($"creating movement action");
             databaseMediator.Conn.Reducers.CreateMovementAction(worldToCell.x, worldToCell.y);

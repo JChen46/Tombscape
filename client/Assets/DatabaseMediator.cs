@@ -2,6 +2,7 @@ using System;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
+using Util;
 
 [CreateAssetMenu(fileName = "Database Mediator", menuName = "Scriptable Objects/Database")]
 public class DatabaseMediator : ScriptableObject
@@ -12,14 +13,10 @@ public class DatabaseMediator : ScriptableObject
     public Identity LocalIdentity { get; private set; }
     public DbConnection Conn { get; private set; }
 
-    private bool _connected;
-
-    public delegate void OnConnectHandler();
-    private event OnConnectHandler OnConnect;
+    public OneShotEvent OnConnect = new();
 
     public void Connect()
     {
-        _connected = false;
         // In order to build a connection to SpacetimeDB we need to register
         // our callbacks and specify a SpacetimeDB server URI and module name.
         var builder = DbConnection.Builder()
@@ -41,22 +38,9 @@ public class DatabaseMediator : ScriptableObject
         Conn = builder.Build();
     }
 
-    public void WhenConnected(OnConnectHandler handler)
-    {
-        if (_connected)
-        {
-            handler();
-        }
-        else
-        {
-            OnConnect += handler;
-        }
-    }
-
     public void Disconnect()
     {
-        Conn?.Disconnect();
-        _connected = false;
+        OnConnect = new OneShotEvent();
     }
     
     // Called when we connect to SpacetimeDB and receive our client identity
@@ -88,7 +72,6 @@ public class DatabaseMediator : ScriptableObject
     
     private void HandleDisconnect(DbConnection conn, Exception ex)
     {
-        _connected = false;
         Debug.Log("Disconnected.");
         if (ex != null)
         {
@@ -100,12 +83,6 @@ public class DatabaseMediator : ScriptableObject
     {
         Debug.Log("Subscription applied!");
         
-        _connected = true;
-        OnConnect?.Invoke();
-
-        Conn.Db.Player.OnInsert += (context, row) =>
-        {
-            Log.Info("Inserted.");
-        };
+        OnConnect.Invoke();
     }
 }

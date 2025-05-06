@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using SpacetimeDB;
-using SpacetimeDB.Types;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Util;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,36 +9,21 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private DatabaseMediator databaseMediator;
 
-    private bool _entered = false;
-    public delegate void OnEnterHandler();
-    private event OnEnterHandler OnEnter;
+    public readonly OneShotEvent OnEnter = new OneShotEvent();
 
     private void Start()
     {
         Instance = this;
         databaseMediator.Connect();
-        databaseMediator.WhenConnected(() =>
+        databaseMediator.OnConnect.Subscribe(() =>
         {
             Log.Info("Adding handlers");
             databaseMediator.Conn.Reducers.EnterGame("testPlayer");
             databaseMediator.Conn.Reducers.OnEnterGame += (context, row) =>
             {
-                _entered = true;
-                OnEnter?.Invoke();
+                OnEnter.Invoke();
             };
         });
-    }
-
-    public void WhenEntered(OnEnterHandler handler)
-    {
-        if (_entered)
-        {
-            handler();
-        }
-        else
-        {
-            OnEnter += handler;
-        }
     }
 
     void OnDestroy()
