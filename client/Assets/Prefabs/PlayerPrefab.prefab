@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1984740590367972850}
   - component: {fileID: 5568511012076852463}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 4209688464797490223}
   - component: {fileID: 7431740910081323757}
   - component: {fileID: 8405758365464251181}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,10 +190,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInfo: {fileID: 11400000, guid: deae0f87a73025640a9f7883a190596e, type: 2}
-  entityBase: {fileID: 11400000, guid: 4e5d987684a55d74c9c5323216bca5f8, type: 2}
   highlighter: {fileID: 5825189507064352723}
   databaseMediator: {fileID: 11400000, guid: f9f6ebdd065baca4da40aec25cb31800, type: 2}
-  tilemap: {fileID: 0}
 --- !u!58 &8405758365464251181
 CircleCollider2D:
   m_ObjectHideFlags: 0

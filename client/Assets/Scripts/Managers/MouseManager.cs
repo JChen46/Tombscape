@@ -3,35 +3,75 @@ using UnityEngine.Tilemaps;
 
 public class MouseManager : MonoBehaviour
 {
-    public Tilemap tilemap;
+    [SerializeField] private Tilemap tilemap;
+    [SerializeField] private LayerMask entityLayer;
+    [SerializeField] private LayerMask tilemapLayer;
 
-    private Vector3Int lastHoveredTile;
+    private static readonly Vector3Int MIN_VECTOR3INT = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
+    private Vector3Int lastHoveredTile = MIN_VECTOR3INT;
+    private Collider2D lastHoveredEntity;
 
+    void unhoverTile()
+    {
+        // Unhover tile
+        TileEvents.RaiseTileExit();
+        lastHoveredTile = MIN_VECTOR3INT;
+    }
+    
     void Update()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int gridPos = tilemap.WorldToCell(mouseWorldPos);
+        // Check for entityLayer collision
+        RaycastHit2D entityOnMouse = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, entityLayer);
 
-        if (Input.GetMouseButtonDown(0)) // if LMB pressed
+        if (entityOnMouse.collider)
         {
-            TileEvents.RaiseTileClicked(gridPos);
+            // Checks if hovered collider is new
+            if (entityOnMouse.collider != lastHoveredEntity)
+            {
+                Debug.Log($"Hit entity: {entityOnMouse.collider.name}");
+                // TODO: Handle entity hover interaction
+                unhoverTile();
+                // Sets entity as last hovered
+                lastHoveredEntity = entityOnMouse.collider;
+            }
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                // TODO: Handle entity click interaction
+            }
         }
-        
-        if (gridPos != lastHoveredTile) // TODO: figure out how to only highlight one thing at a time
+        else
         {
-            if (tilemap.HasTile(gridPos))
+            // check for tilemap collision
+            RaycastHit2D tilemapOnMouse = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, tilemapLayer);
+            if (tilemapOnMouse.collider)
             {
-                // Debug.Log("Raising tile hovered");
-                TileEvents.RaiseTileHovered(gridPos);
-
-                lastHoveredTile = gridPos;
-            }
-            else if(tilemap.HasTile(lastHoveredTile))
+                Vector3Int tilePos = tilemap.WorldToCell(mouseWorldPos);
+                
+                // Checks if hovered tilemap is new
+                if (tilePos != lastHoveredTile)
+                {
+                    // Debug.Log($"Hit tilemap: {tilemapOnMouse.collider.name}");
+                    TileEvents.RaiseTileHovered(tilePos);
+                    lastHoveredTile = tilePos;
+                } 
+                
+                if (Input.GetMouseButtonDown(0))
+                {
+                    // Handle tile clicked interaction
+                    TileEvents.RaiseTileClicked(tilePos);
+                }
+            } else if (lastHoveredTile !=  MIN_VECTOR3INT)
             {
-                // Debug.Log("Raising tile exited");
-                TileEvents.RaiseTileExit(gridPos);
-                lastHoveredTile = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
+                unhoverTile();
             }
+            
+        }
+        // Reset entity hover if there’s no entity under the mouse
+        if (!entityOnMouse.collider && lastHoveredEntity)
+        {
+            lastHoveredEntity = null;
         }
     }
 }

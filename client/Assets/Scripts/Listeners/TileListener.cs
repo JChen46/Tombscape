@@ -50,8 +50,9 @@ public class TileListener : MonoBehaviour
         // highlighter.SetActive(false); // part of deleting the tile
     }
 
-    void HandleTileExit(Vector3Int tilePos)
+    void HandleTileExit()
     {
+        // Debug.Log("Exiting tile");
         highlighter.SetActive(false);
     }
 
