@@ -10,20 +10,18 @@ public class TileListener : MonoBehaviour
     [SerializeField] public GameObject highlighter;
     [SerializeField] private DatabaseMediator databaseMediator;
 
-    // private Vector3Int? currentTile = null;
-
     void OnEnable()
     {
-        TileEvents.OnTileHovered += HandleTileHovered;
-        TileEvents.OnTileClicked += HandleTileClicked;
-        TileEvents.OnTileExit += HandleTileExit;
+        TileEvents.OnTileHovered.AddListener(HandleTileHovered);
+        TileEvents.OnTileClicked.AddListener(HandleTileClicked);
+        TileEvents.OnTileExit.AddListener(HandleTileExit);
     }
-
+    
     void OnDisable()
     {
-        TileEvents.OnTileHovered -= HandleTileHovered;
-        TileEvents.OnTileClicked -= HandleTileClicked;
-        TileEvents.OnTileExit -= HandleTileExit;
+        TileEvents.OnTileHovered.RemoveListener(HandleTileHovered);
+        TileEvents.OnTileClicked.RemoveListener(HandleTileClicked);
+        TileEvents.OnTileExit.RemoveListener(HandleTileExit);
     }
 
     void HandleTileHovered(Vector3Int tilePos)

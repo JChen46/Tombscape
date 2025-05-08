@@ -7,14 +7,14 @@ public class EntityListener : MonoBehaviour
     [SerializeField] public SpawnMediator spawnMediator;
     void OnEnable()
     {
-        EntityEvents.OnEntityClicked += HandleEntityClicked;
-        EntityEvents.OnEntityDeleted += HandleEntityDeleted;
+        EntityEvents.OnEntityClicked.AddListener(HandleEntityClicked);
+        EntityEvents.OnEntityDeleted.AddListener(HandleEntityDeleted);
     }
 
     void OnDisable()
     {
-        EntityEvents.OnEntityClicked -= HandleEntityClicked;
-        EntityEvents.OnEntityDeleted -= HandleEntityDeleted;
+        EntityEvents.OnEntityClicked.RemoveListener(HandleEntityClicked);
+        EntityEvents.OnEntityDeleted.RemoveListener(HandleEntityDeleted);
     }
 
     void HandleEntityClicked(Vector3Int tilePos)
