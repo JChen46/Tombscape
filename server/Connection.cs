@@ -85,7 +85,7 @@ public static partial class Module
     }
 
     [Reducer]
-    public static void CreateDummyPlayer(ReducerContext ctx)
+    public static void CreateDummyPlayer(ReducerContext ctx, int x, int y)
     {
         Log.Info("Creating dummy");
         var hexString = Util.GenerateUniqueHexString(64);
@@ -93,7 +93,7 @@ public static partial class Module
         Identity dummyIdentity = Identity.FromHexString(hexString); // needs to be 64 to be a hex string for U256 data structure, else 32
         var entity = ctx.Db.Entity.Insert(new Entity
         {
-            Position = new DbVector2(10, 10)
+            Position = new DbVector2(x, y)
         });
         var player = ctx.Db.Player.Insert(new Player
         {

@@ -6,9 +6,7 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu]
 public class GroundRuleTile : RuleTile<GroundRuleTile.Neighbor>
 {
-    public bool isWalkable = false; // TODO: Figure out how to instantiate individual tile custom properties
-    public Vector3Int cellPos;
-    
+    public readonly bool isWalkable = true; // these custom properties apply to all GroundRuleTiles
 
     public class Neighbor : RuleTile.TilingRule.Neighbor {
         public const int Null = 3;

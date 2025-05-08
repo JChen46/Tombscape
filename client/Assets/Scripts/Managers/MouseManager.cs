@@ -29,7 +29,7 @@ public class MouseManager : MonoBehaviour
             // Checks if hovered collider is new
             if (entityOnMouse.collider != lastHoveredEntity)
             {
-                Debug.Log($"Hit entity: {entityOnMouse.collider.name}");
+                Debug.Log($"Hovered entity: {entityOnMouse.collider.name}");
                 // TODO: Handle entity hover interaction
                 unhoverTile();
                 // Sets entity as last hovered

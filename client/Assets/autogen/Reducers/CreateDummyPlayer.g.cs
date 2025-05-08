@@ -12,19 +12,21 @@ namespace SpacetimeDB.Types
 {
     public sealed partial class RemoteReducers : RemoteBase
     {
-        public delegate void CreateDummyPlayerHandler(ReducerEventContext ctx);
+        public delegate void CreateDummyPlayerHandler(ReducerEventContext ctx, int x, int y);
         public event CreateDummyPlayerHandler? OnCreateDummyPlayer;
 
-        public void CreateDummyPlayer()
+        public void CreateDummyPlayer(int x, int y)
         {
-            conn.InternalCallReducer(new Reducer.CreateDummyPlayer(), this.SetCallReducerFlags.CreateDummyPlayerFlags);
+            conn.InternalCallReducer(new Reducer.CreateDummyPlayer(x, y), this.SetCallReducerFlags.CreateDummyPlayerFlags);
         }
 
         public bool InvokeCreateDummyPlayer(ReducerEventContext ctx, Reducer.CreateDummyPlayer args)
         {
             if (OnCreateDummyPlayer == null) return false;
             OnCreateDummyPlayer(
-                ctx
+                ctx,
+                args.X,
+                args.Y
             );
             return true;
         }
@@ -36,6 +38,24 @@ namespace SpacetimeDB.Types
         [DataContract]
         public sealed partial class CreateDummyPlayer : Reducer, IReducerArgs
         {
+            [DataMember(Name = "x")]
+            public int X;
+            [DataMember(Name = "y")]
+            public int Y;
+
+            public CreateDummyPlayer(
+                int X,
+                int Y
+            )
+            {
+                this.X = X;
+                this.Y = Y;
+            }
+
+            public CreateDummyPlayer()
+            {
+            }
+
             string IReducerArgs.ReducerName => "CreateDummyPlayer";
         }
     }
