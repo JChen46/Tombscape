@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] SpawnMediator spawnMediator;
     private RemoteTables Db => databaseMediator.Conn.Db;
     
-    // public delegate void OnEnterHandler();
-    // private event OnEnterHandler OnEnter;
+    public delegate void OnEnterHandler();
+    private event Action OnEnter;
 
     void Awake()
     {
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         
         // TODO: Figure out how to move this spawning logic elsewhere
         databaseMediator.Connect();
-        databaseMediator.WhenConnected(() =>
+        databaseMediator.OnConnect.Subscribe(() =>
         {
             // TODO: call spawn dummy reducer for testing purposes
             Log.Info("Adding handlers");
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
                     Player player = Db.Player.Identity.Find(databaseMediator.LocalIdentity) ?? throw new Exception("OnEnterGame :: Player not found");
                     Character character = Db.Character.PlayerId.Find(player.PlayerId) ?? throw new Exception("OnEnterGame :: Character not found");
                     Entity entity = Db.Entity.EntityId.Find(character.EntityId) ?? throw new Exception("OnEnterGame :: Entity not found");
-                    Vector3 position = new Vector3(entity.Position.X, entity.Position.Y, 0);
+                    Vector3Int position = new Vector3Int(entity.Position.X, entity.Position.Y, 0);
                     Debug.Log($"Calling SpawnPlayer with position: {position}, playerId: {player.PlayerId}, playerName: {player.Name}");
                     spawnMediator.SpawnPlayer(position, databaseMediator.LocalIdentity, player, entity);
                 }
@@ -52,6 +52,11 @@ public class GameManager : MonoBehaviour
                 // SpawnManager.SpawnPlayer();
             };
         });
+    }
+
+    void OnDestroy()
+    {
+        Debug.Log("Destroying GameManager...");
     }
     
 }

@@ -13,26 +13,19 @@ public class SpawnMediator : ScriptableObject
     [SerializeField] private MapManager mapManager;
 
     // Dictionary with entityId key, game object value
-    private readonly Dictionary<uint, GameObject> _entities = new();
+    public readonly Dictionary<uint, GameObject> entitiesDict = new();
     
-    public void SpawnPlayer(Vector3 spawnPosition, Identity playerIdentity, Player player, Entity entity)
+    public void SpawnPlayer(Vector3Int spawnPosition, Identity playerIdentity, Player player, Entity entity)
     {
-        spawnPosition += new Vector3(0.5f, 0.5f, 0); // offset players
 
         GameObject playerGameObject = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
         PlayerData spawnedPlayer = playerGameObject.GetComponent<PlayerData>();
 
         if (spawnedPlayer != null)
         {
-            PlayerInfo playerInfo = ScriptableObject.CreateInstance<PlayerInfo>();
-            playerInfo.identity = playerIdentity;
-            playerInfo.playerId = player.PlayerId;
-            playerInfo.playerName = player.Name;
-            playerInfo.EntityId = entity.EntityId;
-            playerInfo.Position = Vector3Int.FloorToInt(spawnPosition); // Caution: may have unintended side-effects
-            spawnedPlayer.Init(playerInfo);
+            spawnedPlayer.Init(player, entity);
             
-            _entities.Add(entity.EntityId, playerGameObject);
+            entitiesDict.Add(entity.EntityId, playerGameObject);
         }
         else
         {
@@ -53,11 +46,11 @@ public class SpawnMediator : ScriptableObject
 
     public void DeleteEntity(uint entityId)
     {
-        if (_entities.TryGetValue(entityId, out var gameObjectToBeDeleted))
+        if (entitiesDict.TryGetValue(entityId, out var gameObjectToBeDeleted))
         {
             Destroy(gameObjectToBeDeleted);
         }
-        _entities.Remove(entityId);
+        entitiesDict.Remove(entityId);
         
     }
 }
