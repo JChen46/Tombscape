@@ -13,8 +13,7 @@ public class DatabaseMediator : ScriptableObject
     public Identity LocalIdentity { get; private set; }
     public DbConnection Conn { get; private set; }
 
-    // public delegate void OnConnectHandler();
-    public OneShotEvent OnConnect = new();
+    public readonly OneShotEvent OnConnect = new();
 
     public void Connect()
     {
