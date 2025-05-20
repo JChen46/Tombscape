@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 public static class TileEvents
 {
-    // TODO: Change from C# events to unity events for better support
     public static UnityEvent<Vector3Int> OnTileHovered = new UnityEvent<Vector3Int>();
     public static UnityEvent<Vector3Int> OnTileClicked = new UnityEvent<Vector3Int>();
     public static UnityEvent OnTileExit = new UnityEvent();

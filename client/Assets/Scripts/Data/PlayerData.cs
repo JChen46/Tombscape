@@ -5,7 +5,6 @@ using UnityEngine.Tilemaps;
 public class PlayerData : DatabaseDependent , IHasEntity
 {
     [SerializeField] private GameObject highlighter;
-    [SerializeField] private DatabaseMediator databaseMediator;
 
     private Player _player;
     public Entity Entity { get; private set; }

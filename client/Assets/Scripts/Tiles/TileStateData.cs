@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 [System.Serializable]
 public class TileStateData
 {
-    [FormerlySerializedAs("tileType")] public TileBase tileBase;
+    public TileBase tileBase;
     public string tileName;
     
     public TileStateData(TileBase tileBase)

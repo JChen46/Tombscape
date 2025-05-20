@@ -5,7 +5,6 @@ using Util;
 public interface IHasEntity
 {
     public Entity Entity { get; }
-    public OneShotEvent OnDataReady { get; }
 }
 
 namespace Util

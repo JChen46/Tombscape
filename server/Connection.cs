@@ -11,7 +11,7 @@ public static partial class Module
     }
 
     [Reducer]
-    public static void DoConnect(ReducerContext ctx)
+    public static void DoConnect(ReducerContext ctx) // TODO: Link re-connections to entity position instead of position 0,0
     {
         var player = ctx.Db.Logged_out_player.Identity.Find(ctx.Sender);
         if (player != null)
@@ -81,7 +81,7 @@ public static partial class Module
             PlayerId = player.PlayerId,
             Health = StartingHealth
         });
-        Log.Info($"Player {name} entered");
+        Log.Info($"Player {name} entered with EntityID: {entity.EntityId}");
     }
 
     [Reducer]
@@ -106,7 +106,7 @@ public static partial class Module
             PlayerId = player.PlayerId,
             Health = 100000
         });
-        Log.Info($"Create dummy with identity {player.Identity}");
+        Log.Info($"Create dummy with entityId: {entity.EntityId}, name: {player.Name}, identity {player.Identity}");
     }
 
     [Reducer]

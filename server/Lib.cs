@@ -85,6 +85,14 @@ public static partial class Module
         {
             var nextTick = Timestamp.FromTimeSpanSinceUnixEpoch(tick.EndTime.ToTimeSpanSinceUnixEpoch().Add(TickRate));
             Log.Debug($"EndTick {tick.ScheduledId}, time diff: {nextTick.TimeDurationSince(ctx.Timestamp)}");
+            // Log.Debug($" - Timestamp: {Timestamp.FromTimeSpanSinceUnixEpoch(nextTick.TimeDurationSince(ctx.Timestamp))}");
+            // Log.Debug($" - TimeDurationSince: {ctx.Timestamp.TimeDurationSince(nextTick)}");
+            
+            if (ctx.Timestamp.TimeDurationSince(nextTick) > TimeSpan.FromMilliseconds(10000)) // if timestamp gap is > 10000ms, set nextTick based on current time + TickRate
+            {
+                Log.Debug("Triggering tick diff fixer");
+                nextTick =  Timestamp.FromTimeSpanSinceUnixEpoch(ctx.Timestamp.ToTimeSpanSinceUnixEpoch().Add(TickRate));
+            }
             ctx.Db.Tick.Insert(new Tick
             {
                 ScheduleAt = new ScheduleAt.Time(nextTick),
